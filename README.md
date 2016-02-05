@@ -1,9 +1,9 @@
-Nucleus Assessment
+Nucleus Copier
 ================
 
-This is the Assessment handler for Project Nucleus. 
+This is the Copier handler for Project Nucleus. 
 
-This project contains just one main verticle which is responsible for listening for assessment address on message bus. 
+This project contains just one main verticle which is responsible for listening for copier address on message bus. 
 
 DONE
 ----
