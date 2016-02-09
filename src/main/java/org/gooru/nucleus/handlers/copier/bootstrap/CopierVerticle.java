@@ -15,7 +15,6 @@ import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class CopierVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CopierVerticle.class);
@@ -30,7 +29,7 @@ public class CopierVerticle extends AbstractVerticle {
       if (future.succeeded()) {
         voidFuture.complete();
       } else {
-        voidFuture.fail("Not able to initialize the Assessment machinery properly");
+        voidFuture.fail("Not able to initialize the Copier machinery properly");
       }
     });
 
@@ -54,12 +53,11 @@ public class CopierVerticle extends AbstractVerticle {
 
       });
 
-
     }).completionHandler(result -> {
       if (result.succeeded()) {
-        LOGGER.info("Assessment end point ready to listen");
+        LOGGER.info("Copier end point ready to listen");
       } else {
-        LOGGER.error("Error registering the assessment handler. Halting the Assessment machinery");
+        LOGGER.error("Error registering the copier handler. Halting the Copier machinery");
         Runtime.getRuntime().halt(1);
       }
     });
@@ -77,7 +75,7 @@ public class CopierVerticle extends AbstractVerticle {
       for (Initializer initializer : initializers) {
         initializer.initializeComponent(vertx, config());
       }
-    } catch(IllegalStateException ie) {
+    } catch (IllegalStateException ie) {
       LOGGER.error("Error initializing application", ie);
       Runtime.getRuntime().halt(1);
     }
@@ -85,7 +83,7 @@ public class CopierVerticle extends AbstractVerticle {
 
   private void shutDownApplication() {
     Finalizers finalizers = new Finalizers();
-    for (Finalizer finalizer : finalizers ) {
+    for (Finalizer finalizer : finalizers) {
       finalizer.finalizeComponent();
     }
 

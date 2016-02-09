@@ -14,25 +14,25 @@ public class DBHandlerBuilder {
   }
 
   public DBHandler buildCopyCollectionHandler(ProcessorContext context) {
-    return new CopyAssessmentHandler(context);
+    return new CopyCollectionHandler(context);
   }
-  
+
   public DBHandler buildCopyAssessmentHandler(ProcessorContext context) {
-    return new CopyLessonHandler(context);
+    return new CopyAssessmentHandler(context);
 
   }
 
   public DBHandler buildCopyCourseHandler(ProcessorContext context) {
-    return new CopyCollectionHandler(context);
+    return new CopyCourseHandler(context);
   }
 
   public DBHandler buildCopyUnitHandler(ProcessorContext context) {
-    return new CopyCourseHandler(context);
+    return new CopyUnitHandler(context);
 
   }
 
   public DBHandler buildCopyLessonHandler(ProcessorContext context) {
-    return new CopyUnitHandler(context);
+    return new CopyLessonHandler(context);
 
   }
 }

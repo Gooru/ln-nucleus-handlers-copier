@@ -3,6 +3,8 @@ package org.gooru.nucleus.handlers.copier.processors;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 
+import java.util.UUID;
+
 import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
 import org.gooru.nucleus.handlers.copier.processors.repositories.RepoBuilder;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
@@ -78,7 +80,7 @@ class MessageProcessor implements Processor {
 
   private MessageResponse processQuestionCopy() {
     ProcessorContext context = createContext();
-    if (context.resourceId() == null || context.resourceId().isEmpty()) {
+    if (context.questionId() == null || context.questionId().isEmpty()) {
       LOGGER.error("Invalid request, question id not available. Aborting");
       return MessageResponseFactory.createInvalidRequestResponse("Invalid question id");
     }
@@ -163,5 +165,26 @@ class MessageProcessor implements Processor {
 
     // All is well, continue processing
     return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+  }
+  
+  
+  
+  private boolean validateUser(String userId) {
+    return !(userId == null || userId.isEmpty()) && (userId.equalsIgnoreCase(MessageConstants.MSG_USER_ANONYMOUS) || validateUuid(userId));
+  }
+
+  private boolean validateId(String id) {
+    return !(id == null || id.isEmpty()) && validateUuid(id);
+  }
+  
+  private boolean validateUuid(String uuidString) {
+    try {
+      UUID uuid = UUID.fromString(uuidString);
+      return true;
+    } catch (IllegalArgumentException e) {
+      return false;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
