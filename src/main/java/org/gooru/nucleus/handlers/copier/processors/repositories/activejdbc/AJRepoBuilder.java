@@ -9,33 +9,37 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.QuestionRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.ResourceRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.UnitRepo;
 
-public class AJRepoBuilder {
+public final class AJRepoBuilder {
 
-  public ResourceRepo buildResourceRepo(ProcessorContext context) {
+  public static ResourceRepo buildResourceRepo(ProcessorContext context) {
     return new AJResourceRepo(context);
   }
 
-  public QuestionRepo buildQuestionRepo(ProcessorContext context) {
+  public static QuestionRepo buildQuestionRepo(ProcessorContext context) {
     return new AJQuestionRepo(context);
   }
 
-  public CollectionRepo buildCollectionRepo(ProcessorContext context) {
+  public static CollectionRepo buildCollectionRepo(ProcessorContext context) {
     return new AJCollectionRepo(context);
   }
 
-  public AssessmentRepo buildAssessmentRepo(ProcessorContext context) {
+  public static AssessmentRepo buildAssessmentRepo(ProcessorContext context) {
     return new AJAssessmentRepo(context);
   }
 
-  public CourseRepo buildCourseRepo(ProcessorContext context) {
+  public static CourseRepo buildCourseRepo(ProcessorContext context) {
     return new AJCourseRepo(context);
   }
 
-  public UnitRepo buildUnitRepo(ProcessorContext context) {
+  public static UnitRepo buildUnitRepo(ProcessorContext context) {
     return new AJUnitRepo(context);
   }
 
-  public LessonRepo buildLessonRepo(ProcessorContext context) {
+  public static LessonRepo buildLessonRepo(ProcessorContext context) {
     return new AJLessonRepo(context);
+  }
+
+  private AJRepoBuilder() {
+    throw new AssertionError();
   }
 }

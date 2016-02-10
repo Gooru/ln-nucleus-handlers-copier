@@ -6,7 +6,9 @@ import org.gooru.nucleus.handlers.copier.constants.HttpConstants;
 import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilder;
 
-public class MessageResponseFactory {
+public final class MessageResponseFactory {
+
+
   public static MessageResponse createInvalidRequestResponse() {
     return new MessageResponse.Builder().failed().setStatusBadRequest().build();
   }
@@ -65,5 +67,9 @@ public class MessageResponseFactory {
 
   public static MessageResponse createOkayResponse(JsonObject body) {
     return new MessageResponse.Builder().successful().setStatusOkay().setResponseBody(body).build();
+  }
+
+  private MessageResponseFactory() {
+    throw new AssertionError();
   }
 }

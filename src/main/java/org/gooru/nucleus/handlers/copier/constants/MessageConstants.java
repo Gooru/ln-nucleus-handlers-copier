@@ -1,6 +1,6 @@
 package org.gooru.nucleus.handlers.copier.constants;
 
-public class MessageConstants {
+public final class MessageConstants {
 
   public static final String MSG_HEADER_OP = "mb.operation";
   public static final String MSG_HEADER_TOKEN = "session.token";
@@ -41,4 +41,7 @@ public class MessageConstants {
   public static final String UNIT_ID = "unitId";
   public static final String LESSON_ID = "lessonId";
 
+  private MessageConstants() {
+    throw new AssertionError();
+  }
 }

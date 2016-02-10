@@ -15,7 +15,7 @@ public class AJResourceRepo implements ResourceRepo {
 
   @Override
   public MessageResponse copyResource() {
-    return new TransactionExecutor().executeTransaction(new DBHandlerBuilder().buildCopyResourceHandler(context));
+    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyResourceHandler(context));
 
   }
 }

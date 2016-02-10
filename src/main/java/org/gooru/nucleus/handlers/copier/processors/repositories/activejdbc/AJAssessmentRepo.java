@@ -15,7 +15,7 @@ public class AJAssessmentRepo implements AssessmentRepo {
 
   @Override
   public MessageResponse copyAssessment() {
-    return new TransactionExecutor().executeTransaction(new DBHandlerBuilder().buildCopyAssessmentHandler(context));
+    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyAssessmentHandler(context));
   }
 
 }

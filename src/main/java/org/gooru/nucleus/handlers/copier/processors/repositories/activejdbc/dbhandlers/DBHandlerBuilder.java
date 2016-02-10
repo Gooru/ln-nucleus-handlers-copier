@@ -2,37 +2,41 @@ package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbh
 
 import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 
-public class DBHandlerBuilder {
+public final class DBHandlerBuilder {
 
-  public DBHandler buildCopyResourceHandler(ProcessorContext context) {
+  public static DBHandler buildCopyResourceHandler(ProcessorContext context) {
     return new CopyResourceHandler(context);
   }
 
-  public DBHandler buildCopyQuestionHandler(ProcessorContext context) {
+  public static DBHandler buildCopyQuestionHandler(ProcessorContext context) {
     return new CopyQuestionHandler(context);
 
   }
 
-  public DBHandler buildCopyCollectionHandler(ProcessorContext context) {
+  public static DBHandler buildCopyCollectionHandler(ProcessorContext context) {
     return new CopyCollectionHandler(context);
   }
 
-  public DBHandler buildCopyAssessmentHandler(ProcessorContext context) {
+  public static DBHandler buildCopyAssessmentHandler(ProcessorContext context) {
     return new CopyAssessmentHandler(context);
 
   }
 
-  public DBHandler buildCopyCourseHandler(ProcessorContext context) {
+  public static DBHandler buildCopyCourseHandler(ProcessorContext context) {
     return new CopyCourseHandler(context);
   }
 
-  public DBHandler buildCopyUnitHandler(ProcessorContext context) {
+  public static DBHandler buildCopyUnitHandler(ProcessorContext context) {
     return new CopyUnitHandler(context);
 
   }
 
-  public DBHandler buildCopyLessonHandler(ProcessorContext context) {
+  public static DBHandler buildCopyLessonHandler(ProcessorContext context) {
     return new CopyLessonHandler(context);
 
+  }
+
+  private DBHandlerBuilder() {
+    throw new AssertionError();
   }
 }

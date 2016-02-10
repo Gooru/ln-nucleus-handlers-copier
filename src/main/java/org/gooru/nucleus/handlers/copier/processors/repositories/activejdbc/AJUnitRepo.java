@@ -15,7 +15,7 @@ public class AJUnitRepo implements UnitRepo {
 
   @Override
   public MessageResponse copyUnit() {
-    return new TransactionExecutor().executeTransaction(new DBHandlerBuilder().buildCopyUnitHandler(context));
+    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyUnitHandler(context));
 
   }
 }

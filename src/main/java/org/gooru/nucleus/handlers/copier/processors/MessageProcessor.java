@@ -75,7 +75,7 @@ class MessageProcessor implements Processor {
       LOGGER.error("Invalid request, resource id not available. Aborting");
       return MessageResponseFactory.createInvalidRequestResponse("Invalid resource id");
     }
-    return new RepoBuilder().buildResourceRepo(context).copyResource();
+    return RepoBuilder.buildResourceRepo(context).copyResource();
   }
 
   private MessageResponse processQuestionCopy() {
@@ -84,7 +84,7 @@ class MessageProcessor implements Processor {
       LOGGER.error("Invalid request, question id not available. Aborting");
       return MessageResponseFactory.createInvalidRequestResponse("Invalid question id");
     }
-    return new RepoBuilder().buildQuestionRepo(context).copyQuestion();
+    return RepoBuilder.buildQuestionRepo(context).copyQuestion();
   }
 
   private MessageResponse processCollectionCopy() {
@@ -93,7 +93,7 @@ class MessageProcessor implements Processor {
       LOGGER.error("Invalid request, collection id not available. Aborting");
       return MessageResponseFactory.createInvalidRequestResponse("Invalid collection id");
     }
-    return new RepoBuilder().buildCollectionRepo(context).copyCollection();
+    return RepoBuilder.buildCollectionRepo(context).copyCollection();
   }
 
   private MessageResponse processAssessmentCopy() {
@@ -102,7 +102,7 @@ class MessageProcessor implements Processor {
       LOGGER.error("Invalid request, assessment id not available. Aborting");
       return MessageResponseFactory.createInvalidRequestResponse("Invalid assessment id");
     }
-    return new RepoBuilder().buildAssessmentRepo(context).copyAssessment();
+    return RepoBuilder.buildAssessmentRepo(context).copyAssessment();
   }
 
   private MessageResponse processCourseCopy() {
@@ -111,7 +111,7 @@ class MessageProcessor implements Processor {
       LOGGER.error("Invalid request, course id not available. Aborting");
       return MessageResponseFactory.createInvalidRequestResponse("Invalid course id");
     }
-    return new RepoBuilder().buildCourseRepo(context).copyCourse();
+    return RepoBuilder.buildCourseRepo(context).copyCourse();
   }
 
   private MessageResponse processUnitCopy() {
@@ -121,7 +121,7 @@ class MessageProcessor implements Processor {
       return MessageResponseFactory.createInvalidRequestResponse("Invalid course/unit id");
     }
 
-    return new RepoBuilder().buildUnitRepo(context).copyUnit();
+    return RepoBuilder.buildUnitRepo(context).copyUnit();
   }
 
   private MessageResponse processLessonCopy() {
@@ -131,7 +131,7 @@ class MessageProcessor implements Processor {
       LOGGER.error("Invalid request, either course id / unit id / lesson id not available. Aborting");
       return MessageResponseFactory.createInvalidRequestResponse("Invalid course/unit/lesson id");
     }
-    return new RepoBuilder().buildLessonRepo(context).copyLesson();
+    return RepoBuilder.buildLessonRepo(context).copyLesson();
   }
 
   private ProcessorContext createContext() {
@@ -166,9 +166,9 @@ class MessageProcessor implements Processor {
     // All is well, continue processing
     return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
   }
-  
-  
-  
+
+
+
   private boolean validateUser(String userId) {
     return !(userId == null || userId.isEmpty()) && (userId.equalsIgnoreCase(MessageConstants.MSG_USER_ANONYMOUS) || validateUuid(userId));
   }
@@ -176,7 +176,7 @@ class MessageProcessor implements Processor {
   private boolean validateId(String id) {
     return !(id == null || id.isEmpty()) && validateUuid(id);
   }
-  
+
   private boolean validateUuid(String uuidString) {
     try {
       UUID uuid = UUID.fromString(uuidString);
