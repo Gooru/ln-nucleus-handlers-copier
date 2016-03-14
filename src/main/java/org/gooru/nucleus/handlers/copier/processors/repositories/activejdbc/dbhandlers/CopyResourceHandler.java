@@ -63,7 +63,7 @@ class CopyResourceHandler implements DBHandler {
     final String resourceId = UUID.randomUUID().toString();
     final UUID userId = UUID.fromString(this.context.userId());
     final UUID parentResourceId = UUID.fromString(this.context.resourceId());
-    int count = Base.exec(AJEntityContent.COPY_RESOURCE_QUERY, UUID.fromString(resourceId), userId, userId, parentResourceId, parentResourceId);
+    int count = Base.exec(AJEntityContent.COPY_RESOURCE_QUERY, UUID.fromString(resourceId), userId, userId, parentResourceId , parentResourceId, parentResourceId);
     if (count == 0) {
       return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
