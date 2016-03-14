@@ -60,15 +60,15 @@ class CopyResourceHandler implements DBHandler {
 
   @Override
   public ExecutionResult<MessageResponse> executeRequest() {
-    final String copyResourceId = UUID.randomUUID().toString();
+    final String resourceId = UUID.randomUUID().toString();
     final UUID userId = UUID.fromString(this.context.userId());
-    final UUID resourceId = UUID.fromString(this.context.resourceId());
-    int count = Base.exec(AJEntityContent.COPY_RESOURCE_QUERY, UUID.fromString(copyResourceId), userId, userId, resourceId);
+    final UUID parentResourceId = UUID.fromString(this.context.resourceId());
+    int count = Base.exec(AJEntityContent.COPY_RESOURCE_QUERY, UUID.fromString(resourceId), userId, userId, parentResourceId, parentResourceId);
     if (count == 0) {
-      // write validation error
+      return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
-    return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyResourceId,
-            EventBuilderFactory.getCopyResourceEventBuilder(copyResourceId)), ExecutionResult.ExecutionStatus.SUCCESSFUL);
+    return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(resourceId,
+            EventBuilderFactory.getCopyResourceEventBuilder(resourceId)), ExecutionResult.ExecutionStatus.SUCCESSFUL);
   }
 
   @Override
