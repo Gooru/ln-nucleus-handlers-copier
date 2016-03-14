@@ -15,6 +15,6 @@ public class AJLessonRepo implements LessonRepo {
 
   @Override
   public MessageResponse copyLesson() {
-    return new TransactionExecutor().executeTransaction(new DBHandlerBuilder().buildCopyLessonHandler(context));
+    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyLessonHandler(context));
   }
 }

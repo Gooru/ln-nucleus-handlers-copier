@@ -15,7 +15,7 @@ public class AJQuestionRepo implements QuestionRepo {
 
   @Override
   public MessageResponse copyQuestion() {
-    return new TransactionExecutor().executeTransaction(new DBHandlerBuilder().buildCopyQuestionHandler(context));
+    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyQuestionHandler(context));
 
   }
 }

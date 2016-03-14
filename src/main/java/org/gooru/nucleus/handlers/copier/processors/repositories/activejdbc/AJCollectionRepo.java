@@ -15,7 +15,7 @@ public class AJCollectionRepo implements CollectionRepo {
 
   @Override
   public MessageResponse copyCollection() {
-    return new TransactionExecutor().executeTransaction(new DBHandlerBuilder().buildCopyCollectionHandler(context));
+    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyCollectionHandler(context));
 
   }
 }
