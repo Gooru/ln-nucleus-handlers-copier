@@ -65,7 +65,7 @@ class CopyQuestionHandler implements DBHandler {
     final UUID parentQuestionId = UUID.fromString(context.questionId());
     int count = Base.exec(AJEntityContent.COPY_QUESTION_QUERY, UUID.fromString(questionId), userId, userId, parentQuestionId, parentQuestionId, parentQuestionId);
     if (count == 0) {
-      // write validation error
+    	return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
     return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(questionId,
             EventBuilderFactory.getCopyResourceEventBuilder(questionId)), ExecutionResult.ExecutionStatus.SUCCESSFUL);

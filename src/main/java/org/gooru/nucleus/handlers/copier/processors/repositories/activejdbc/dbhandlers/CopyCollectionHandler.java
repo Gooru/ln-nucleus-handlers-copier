@@ -63,10 +63,12 @@ class CopyCollectionHandler implements DBHandler {
     final String copyCollectionId = UUID.randomUUID().toString();
     final UUID userId = UUID.fromString(context.userId());
     final UUID collectionId = UUID.fromString(context.collectionId());
-    int count = Base.exec(AJEntityCollection.COPY_COLLECTION_QUERY, UUID.fromString(copyCollectionId), userId, userId, userId, collectionId);
+    int count = Base.exec(AJEntityCollection.COPY_COLLECTION_QUERY, UUID.fromString(copyCollectionId), userId, userId, userId, collectionId , collectionId);
     if (count == 0) {
-      // write validation error
+    	return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
+    
+    Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, userId, userId, UUID.fromString(copyCollectionId) , collectionId);
     return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCollectionId,
             EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId)), ExecutionResult.ExecutionStatus.SUCCESSFUL);
   }

@@ -62,10 +62,12 @@ class CopyAssessmentHandler implements DBHandler {
     final String copyAssessmentId = UUID.randomUUID().toString();
     final UUID userId = UUID.fromString(context.userId());
     final UUID assessmentId = UUID.fromString(context.assessmentId());
-    int count = Base.exec(AJEntityCollection.COPY_ASSESSMENT_QUERY, UUID.fromString(copyAssessmentId), userId, userId, userId, assessmentId);
+    int count = Base.exec(AJEntityCollection.COPY_ASSESSMENT_QUERY, UUID.fromString(copyAssessmentId), userId, userId, userId, assessmentId , assessmentId);
     if (count == 0) {
-      // write validation error
+    	return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
+    Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, userId, userId, UUID.fromString(copyAssessmentId), assessmentId);
+    
     return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyAssessmentId,
             EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId)), ExecutionResult.ExecutionStatus.SUCCESSFUL);
   }
