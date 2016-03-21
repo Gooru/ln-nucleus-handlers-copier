@@ -97,7 +97,7 @@ class CopyResourceHandler implements DBHandler {
       if (courses != null && courses.size() > 0) {
         AJEntityCourse targetCourse = courses.get(0);
         targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
-        targetCourse.save();      
+        targetCourse.save();
       }
     }
     return new ExecutionResult<>(
