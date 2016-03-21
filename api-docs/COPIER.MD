@@ -23,7 +23,7 @@ Features
 | Response Code | 201 Successful |
 
 
-**Request Body Parameters**
+**Request Body attributes**
 
 | Name | Comments |
 |------|---------|
@@ -55,7 +55,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 ```posh
 curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjhiNTg4NzA6YmE5NTZhOTctYWUxNS0xMWU1LWEzMDItZjhhOTYzMDY1OTc2" -X POST -d '{
     "target_collection_id": "f6e0f3cc-1915-4f4e-878f-b6d785648ebc"
-}' http://127.0.0.1:8080/api/nucleus/v1/copier/resources/37c6748a-64ce-48a8-9e10-4dc455e90ea0
+}' http://nucleus.gooru.org/api/nucleus/v1/copier/resources/37c6748a-64ce-48a8-9e10-4dc455e90ea0
 ```
 
 ###Copy Question
@@ -71,7 +71,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Response Code | 201 Successful |
 
 
-**Request Body Parameters**
+**Request Body attributes**
 
 | Name | Comments |
 |------|---------|
@@ -102,7 +102,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 ```posh
 curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjhiNTg4NzA6YmE5NTZhOTctYWUxNS0xMWU1LWEzMDItZjhhOTYzMDY1OTc2" -X POST -d '{
     "target_collection_id": "f6e0f3cc-1915-4f4e-878f-b6d785648ebc"
-}' http://127.0.0.1:8080/api/nucleus/v1/copier/questions/56737bfe-f289-4b3a-af9b-ddb3fd0564b7
+}' http://nucleus.gooru.org/api/nucleus/v1/copier/questions/56737bfe-f289-4b3a-af9b-ddb3fd0564b7
 ```
 
 ###Copy Collection
@@ -117,7 +117,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
 
-**Request Body Parameters**
+**Request Body attributes**
 
 | Name | Comments |
 |------|---------|
@@ -154,7 +154,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
     "target_course_id": "0d02a26d-ceb8-48d9-b5e0-779b65cf635f",
     "target_unit_id": "b9040425-ee79-4b37-a970-80f1587fda2a",
     "target_lesson_id": "b9d66d23-0b4c-4910-9664-05fd54fa8da9"
-  }' http://127.0.0.1:8080/api/nucleus/v1/copier/collections/f6e0f3cc-1915-4f4e-878f-b6d785648ebc
+  }' http://nucleus.gooru.org/api/nucleus/v1/copier/collections/f6e0f3cc-1915-4f4e-878f-b6d785648ebc
 ```
 
 ###Copy Assessment
@@ -169,7 +169,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
 
-**Request Body Parameters**
+**Request Body attributes**
 
 | Name | Comments |
 |------|---------|
@@ -207,7 +207,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
     "target_course_id": "0d02a26d-ceb8-48d9-b5e0-779b65cf635f",
     "target_unit_id": "b9040425-ee79-4b37-a970-80f1587fda2a",
     "target_lesson_id": "b9d66d23-0b4c-4910-9664-05fd54fa8da9"
-  }' http://127.0.0.1:8080/api/nucleus/v1/copier/assessments/d0e72584-252a-4b6a-b60c-f556dffb37f4
+  }' http://nucleus.gooru.org/api/nucleus/v1/copier/assessments/d0e72584-252a-4b6a-b60c-f556dffb37f4
 ```
 
 ###Copy Course
@@ -240,7 +240,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 **CURL snippet**
 
 ```posh
-curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjhiNTg4NzA6YmE5NTZhOTctYWUxNS0xMWU1LWEzMDItZjhhOTYzMDY1OTc2" -X POST -d '{}' http://127.0.0.1:8080/api/nucleus/v1/copier/courses/af660a5a-95d5-4197-8fa2-19f975d21e0b
+curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjhiNTg4NzA6YmE5NTZhOTctYWUxNS0xMWU1LWEzMDItZjhhOTYzMDY1OTc2" -X POST -d '{}' http://nucleus.gooru.org/api/nucleus/v1/copier/courses/af660a5a-95d5-4197-8fa2-19f975d21e0b
 ```
 
 ###Copy Unit
@@ -255,7 +255,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
 
-**Request Body Parameters**
+**Request Body attributes**
 
 | Name | Comments |
 |------|---------|
@@ -287,7 +287,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 ```posh
 curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjhiNTg4NzA6YmE5NTZhOTctYWUxNS0xMWU1LWEzMDItZjhhOTYzMDY1OTc2" -X POST -d '{
     "target_course_id": "76f11124-f0c0-4a56-a253-6bbe85ae1084"
-  }' http://127.0.0.1:8080/api/nucleus/v1/copier/courses/af660a5a-95d5-4197-8fa2-19f975d21e0b/units/baa1e6e3-2815-4892-940a-11701921737b
+  }' http://nucleus.gooru.org/api/nucleus/v1/copier/courses/af660a5a-95d5-4197-8fa2-19f975d21e0b/units/baa1e6e3-2815-4892-940a-11701921737b
 ```
 
 ###Copy Lesson
@@ -302,7 +302,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
 
-**Request Body Parameters**
+**Request Body attributes**
 
 | Name | Comments |
 |------|---------|
@@ -337,5 +337,5 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjhiNTg4NzA6YmE5NTZhOTctYWUxNS0xMWU1LWEzMDItZjhhOTYzMDY1OTc2" -X POST -d '{
     "target_course_id": "76f11124-f0c0-4a56-a253-6bbe85ae1084",
     "target_unit_id": "0f165f21-861e-4be9-926d-ca997773ab00"
-}' http://127.0.0.1:8080/api/nucleus/v1/copier/courses/af660a5a-95d5-4197-8fa2-19f975d21e0b/units/baa1e6e3-2815-4892-940a-11701921737b/lessons/b9836ee7-01c2-47be-83cf-ed7ff4c95e47
+}' http://nucleus.gooru.org/api/nucleus/v1/copier/courses/af660a5a-95d5-4197-8fa2-19f975d21e0b/units/baa1e6e3-2815-4892-940a-11701921737b/lessons/b9836ee7-01c2-47be-83cf-ed7ff4c95e47
 ```
