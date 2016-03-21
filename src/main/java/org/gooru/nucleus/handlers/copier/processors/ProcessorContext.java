@@ -4,6 +4,7 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.json.JsonObject;
 
 import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
+import org.gooru.nucleus.handlers.copier.constants.ParameterConstants;
 
 public class ProcessorContext {
 
@@ -62,6 +63,22 @@ public class ProcessorContext {
     return this.headers != null ? this.headers.get(MessageConstants.LESSON_ID) : null;
   }
 
+  public String targetCourseId() {
+    return this.request != null ? this.request.getString(ParameterConstants.TARGET_COURSE_ID) : null;
+  }
+
+  public String targetUnitId() {
+    return this.request != null ? this.request.getString(ParameterConstants.TARGET_UNIT_ID) : null;
+  }
+
+  public String targetLessonId() {
+    return this.request != null ? this.request.getString(ParameterConstants.TARGET_LESSON_ID) : null;
+  }
+  
+  public String targetCollectionId() {
+    return this.request != null ? this.request.getString(ParameterConstants.TARGET_COLLECTION_ID) : null;
+  }
+  
   public MultiMap getHeaders() {
     return headers;
   }

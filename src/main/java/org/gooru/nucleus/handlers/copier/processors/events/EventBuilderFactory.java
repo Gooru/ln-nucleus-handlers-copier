@@ -8,12 +8,18 @@ public final class EventBuilderFactory {
   private static final String EVT_QUESTION_COPY = "event.question.copy";
   private static final String EVT_COLLECTION_COPY = "event.collection.copy";
   private static final String EVT_ASSESSMENT_COPY = "event.assessment.copy";
+  private static final String EVT_COURSE_COPY = "event.course.copy";
+  private static final String EVT_UNIT_COPY = "event.unit.copy";
+  private static final String EVT_LESSON_COPY = "event.lesson.copy";
   private static final String EVENT_NAME = "event.name";
   private static final String EVENT_BODY = "event.body";
   private static final String RESOURCE_ID = "resourceId";
   private static final String QUESTION_ID = "questionId";
   private static final String COLLECTION_ID = "collectionId";
   private static final String ASSESSMENT_ID = "assessmentId";
+  private static final String COURSE_ID = "courseId";
+  private static final String UNIT_ID = "unitId";
+  private static final String LESSON_ID = "lessonId";
 
   private EventBuilderFactory() {
     throw new AssertionError();
@@ -35,4 +41,15 @@ public final class EventBuilderFactory {
     return () -> new JsonObject().put(EVENT_NAME, EVT_ASSESSMENT_COPY).put(EVENT_BODY, new JsonObject().put(ASSESSMENT_ID, assessmentId));
   }
 
+  public static EventBuilder getCopyCourseEventBuilder(String courseId) {
+    return () -> new JsonObject().put(EVENT_NAME, EVT_COURSE_COPY).put(EVENT_BODY, new JsonObject().put(COURSE_ID, courseId));
+  }
+
+  public static EventBuilder getCopyUnitEventBuilder(String unitId) {
+    return () -> new JsonObject().put(EVENT_NAME, EVT_UNIT_COPY).put(EVENT_BODY, new JsonObject().put(UNIT_ID, unitId));
+  }
+
+  public static EventBuilder getCopyLessonEventBuilder(String lessonId) {
+    return () -> new JsonObject().put(EVENT_NAME, EVT_LESSON_COPY).put(EVENT_BODY, new JsonObject().put(LESSON_ID, lessonId));
+  }
 }

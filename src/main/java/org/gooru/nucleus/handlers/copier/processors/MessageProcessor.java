@@ -3,8 +3,6 @@ package org.gooru.nucleus.handlers.copier.processors;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 
-import java.util.UUID;
-
 import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
 import org.gooru.nucleus.handlers.copier.processors.repositories.RepoBuilder;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
@@ -15,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 class MessageProcessor implements Processor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Processor.class);
+  private final Logger LOGGER = LoggerFactory.getLogger(Processor.class);
   private final Message<Object> message;
   private String userId;
   private JsonObject prefs;
@@ -71,66 +69,36 @@ class MessageProcessor implements Processor {
 
   private MessageResponse processResourceCopy() {
     ProcessorContext context = createContext();
-    if (context.resourceId() == null || context.resourceId().isEmpty()) {
-      LOGGER.error("Invalid request, resource id not available. Aborting");
-      return MessageResponseFactory.createInvalidRequestResponse("Invalid resource id");
-    }
     return RepoBuilder.buildResourceRepo(context).copyResource();
   }
 
   private MessageResponse processQuestionCopy() {
     ProcessorContext context = createContext();
-    if (context.questionId() == null || context.questionId().isEmpty()) {
-      LOGGER.error("Invalid request, question id not available. Aborting");
-      return MessageResponseFactory.createInvalidRequestResponse("Invalid question id");
-    }
     return RepoBuilder.buildQuestionRepo(context).copyQuestion();
   }
 
   private MessageResponse processCollectionCopy() {
     ProcessorContext context = createContext();
-    if (context.collectionId() == null || context.collectionId().isEmpty()) {
-      LOGGER.error("Invalid request, collection id not available. Aborting");
-      return MessageResponseFactory.createInvalidRequestResponse("Invalid collection id");
-    }
     return RepoBuilder.buildCollectionRepo(context).copyCollection();
   }
 
   private MessageResponse processAssessmentCopy() {
     ProcessorContext context = createContext();
-    if (context.assessmentId() == null || context.assessmentId().isEmpty()) {
-      LOGGER.error("Invalid request, assessment id not available. Aborting");
-      return MessageResponseFactory.createInvalidRequestResponse("Invalid assessment id");
-    }
     return RepoBuilder.buildAssessmentRepo(context).copyAssessment();
   }
 
   private MessageResponse processCourseCopy() {
     ProcessorContext context = createContext();
-    if (context.courseId() == null || context.courseId().isEmpty()) {
-      LOGGER.error("Invalid request, course id not available. Aborting");
-      return MessageResponseFactory.createInvalidRequestResponse("Invalid course id");
-    }
     return RepoBuilder.buildCourseRepo(context).copyCourse();
   }
 
   private MessageResponse processUnitCopy() {
     ProcessorContext context = createContext();
-    if (context.courseId() == null || context.courseId().isEmpty() || context.unitId() == null || context.unitId().isEmpty()) {
-      LOGGER.error("Invalid request, either course id or unit id not available. Aborting");
-      return MessageResponseFactory.createInvalidRequestResponse("Invalid course/unit id");
-    }
-
     return RepoBuilder.buildUnitRepo(context).copyUnit();
   }
 
   private MessageResponse processLessonCopy() {
     ProcessorContext context = createContext();
-    if (context.courseId() == null || context.courseId().isEmpty() || context.unitId() == null || context.unitId().isEmpty()
-            || context.lessonId() == null || context.lessonId().isEmpty()) {
-      LOGGER.error("Invalid request, either course id / unit id / lesson id not available. Aborting");
-      return MessageResponseFactory.createInvalidRequestResponse("Invalid course/unit/lesson id");
-    }
     return RepoBuilder.buildLessonRepo(context).copyLesson();
   }
 
@@ -169,22 +137,4 @@ class MessageProcessor implements Processor {
 
 
 
-  private boolean validateUser(String userId) {
-    return !(userId == null || userId.isEmpty()) && (userId.equalsIgnoreCase(MessageConstants.MSG_USER_ANONYMOUS) || validateUuid(userId));
-  }
-
-  private boolean validateId(String id) {
-    return !(id == null || id.isEmpty()) && validateUuid(id);
-  }
-
-  private boolean validateUuid(String uuidString) {
-    try {
-      UUID uuid = UUID.fromString(uuidString);
-      return true;
-    } catch (IllegalArgumentException e) {
-      return false;
-    } catch (Exception e) {
-      return false;
-    }
-  }
 }
