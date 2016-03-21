@@ -13,12 +13,12 @@ DONE
 * Provided Hikari connection pool from data source registry
 * Processor layer is created which is going to take over the message processing from main verticle once message is read
 * Logging and app configuration
-
-TODO
-----
 * Transactional layer to govern the transaction
 * DB layer to actually do the operations
 * Event data needs to be generation in case DML being successful
+* Rest API's for copy CULC/A/RQ
+
+<a href="api-docs/COPIER.MD">Click here</a> to see the API documentation
 
 To understand build related stuff, take a look at **BUILD_README.md**.
 
