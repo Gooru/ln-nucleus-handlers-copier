@@ -13,10 +13,10 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.enti
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityCourse;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityLesson;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityUnit;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.validators.FieldValidator;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
-import org.gooru.nucleus.handlers.copier.utils.InternalHelper;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
@@ -34,17 +34,17 @@ class CopyAssessmentHandler implements DBHandler {
 
   @Override
   public ExecutionResult<MessageResponse> checkSanity() {
-    if (!InternalHelper.validateUser(context.userId())) {
+    if (!FieldValidator.validateUser(context.userId())) {
       LOGGER.warn("Anonymous user attempting to copy assessment");
       return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
-    if (!InternalHelper.validateId(context.assessmentId())) {
+    if (!FieldValidator.validateId(context.assessmentId())) {
       LOGGER.error("Invalid request, source assessment id not available. Aborting");
       return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP004)),
           ExecutionResult.ExecutionStatus.FAILED);
     }
-    if (!InternalHelper.validateId(context.targetCourseId()) || !InternalHelper.validateId(context.targetUnitId())
-        || !InternalHelper.validateId(context.targetLessonId())) {
+    if (!FieldValidator.validateId(context.targetCourseId()) || !FieldValidator.validateId(context.targetUnitId())
+        || !FieldValidator.validateId(context.targetLessonId())) {
       LOGGER.error("Invalid request, either target course id or target unit id or target lesson id  not available. Aborting");
       return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP021)),
           ExecutionResult.ExecutionStatus.FAILED);

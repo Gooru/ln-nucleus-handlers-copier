@@ -12,10 +12,10 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbau
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityCollection;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityContent;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityCourse;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.validators.FieldValidator;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
-import org.gooru.nucleus.handlers.copier.utils.InternalHelper;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
@@ -33,16 +33,16 @@ class CopyQuestionHandler implements DBHandler {
 
   @Override
   public ExecutionResult<MessageResponse> checkSanity() {
-    if (!InternalHelper.validateUser(context.userId())) {
+    if (!FieldValidator.validateUser(context.userId())) {
       LOGGER.warn("Anonymous user attempting to copy question.");
       return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
-    if (!InternalHelper.validateId(context.questionId())) {
+    if (!FieldValidator.validateId(context.questionId())) {
       LOGGER.error("Invalid request, source question id not available. Aborting");
       return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP001)),
           ExecutionResult.ExecutionStatus.FAILED);
     }
-    if (!InternalHelper.validateId(context.targetCollectionId())) {
+    if (!FieldValidator.validateId(context.targetCollectionId())) {
       LOGGER.error("Invalid request, target collection id not available. Aborting");
       return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP020)),
           ExecutionResult.ExecutionStatus.FAILED);

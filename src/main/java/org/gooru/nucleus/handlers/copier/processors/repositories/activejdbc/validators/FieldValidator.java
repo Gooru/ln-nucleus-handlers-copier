@@ -5,6 +5,8 @@ import io.vertx.core.json.JsonObject;
 
 import java.util.UUID;
 
+import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
+
 /**
  * Created by ashish on 28/1/16.
  */
@@ -72,7 +74,7 @@ public interface FieldValidator {
 
   static boolean validateUuid(Object o) {
     try {
-      UUID uuid = UUID.fromString((String) o);
+      UUID.fromString((String) o);
       return true;
     } catch (IllegalArgumentException e) {
       return false;
@@ -81,6 +83,14 @@ public interface FieldValidator {
 
   static boolean validateUuidIfPresent(String o) {
     return o == null || validateUuid(o);
+  }
+
+  static boolean validateUser(String userId) {
+    return !(userId == null || userId.isEmpty()) && (userId.equalsIgnoreCase(MessageConstants.MSG_USER_ANONYMOUS) || validateUuid(userId));
+  }
+
+  static boolean validateId(String id) {
+    return !(id == null || id.isEmpty()) && validateUuid(id);
   }
 
   boolean validateField(Object value);

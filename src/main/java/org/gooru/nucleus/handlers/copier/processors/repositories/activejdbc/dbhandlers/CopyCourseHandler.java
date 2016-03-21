@@ -8,10 +8,10 @@ import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilderFactory;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbauth.AuthorizerBuilder;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityCourse;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.validators.FieldValidator;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
-import org.gooru.nucleus.handlers.copier.utils.InternalHelper;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
@@ -29,11 +29,11 @@ class CopyCourseHandler implements DBHandler {
 
   @Override
   public ExecutionResult<MessageResponse> checkSanity() {
-    if (!InternalHelper.validateUser(context.userId())) {
+    if (!FieldValidator.validateUser(context.userId())) {
       LOGGER.warn("Anonymous user attempting to copy course.");
       return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(), ExecutionResult.ExecutionStatus.FAILED);
     }
-    if (!InternalHelper.validateId(context.courseId())) {
+    if (!FieldValidator.validateId(context.courseId())) {
       LOGGER.error("Invalid request, source course id not available. Aborting");
       return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP006)),
           ExecutionResult.ExecutionStatus.FAILED);
