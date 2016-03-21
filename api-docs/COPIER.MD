@@ -23,6 +23,13 @@ Features
 | Response Code | 201 Successful |
 
 
+**Request Body Parameters**
+
+| Name | Comments |
+|------|---------|
+| target_course_id | target course id |
+
+
 **Authorization Header**
 
 ```
@@ -64,6 +71,12 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Response Code | 201 Successful |
 
 
+**Request Body Parameters**
+
+| Name | Comments |
+|------|---------|
+| target_course_id | target course id |
+
 **Authorization Header**
 
 ```
@@ -104,6 +117,13 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
 
+**Request Body Parameters**
+
+| Name | Comments |
+|------|---------|
+| target_course_id | target course id |
+| target_unit_id | target unit id |
+| target_lesson_id | target lesson id |
 
 **Authorization Header**
 
@@ -148,6 +168,14 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Auth | Required |
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
+
+**Request Body Parameters**
+
+| Name | Comments |
+|------|---------|
+| target_course_id | target course id |
+| target_unit_id | target unit id |
+| target_lesson_id | target lesson id |
 
 
 **Authorization Header**
@@ -227,6 +255,11 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
 
+**Request Body Parameters**
+
+| Name | Comments |
+|------|---------|
+| target_course_id | target course id |
 
 **Response body**
 
@@ -269,6 +302,12 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
 
+**Request Body Parameters**
+
+| Name | Comments |
+|------|---------|
+| target_course_id | target course id |
+| target_unit_id | target unit id |
 
 **Response body**
 
