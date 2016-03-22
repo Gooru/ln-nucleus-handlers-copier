@@ -75,7 +75,8 @@ class CopyUnitHandler implements DBHandler {
     final UUID copyUnitId = UUID.randomUUID();
     final UUID userId = UUID.fromString(context.userId());
     final UUID unitId = UUID.fromString(context.unitId());
-    int count = Base.exec(AJEntityUnit.COPY_UNIT, UUID.fromString(context.targetCourseId()), copyUnitId, userId, userId, userId, unitId);
+    final UUID targetCourseId = UUID.fromString(context.targetCourseId());
+    int count = Base.exec(AJEntityUnit.COPY_UNIT, targetCourseId, copyUnitId, userId, userId, userId, targetCourseId, unitId);
     if (count > 0) {
       int lessonCount = Base.exec(AJEntityUnit.COPY_LESSON, userId, userId, userId, copyUnitId, unitId);
       if (lessonCount > 0) {
