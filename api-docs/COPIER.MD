@@ -111,7 +111,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 **Location Header**
 
 ```
-    Location: b45dd1de-5b4e-4360-b9c1-becbea3a03a5
+  Location: b45dd1de-5b4e-4360-b9c1-becbea3a03a5
 ```
 
 **CURL snippet**
@@ -147,7 +147,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 **Location Header**
 
 ```
-    Location: 936a7b86-a223-4a22-97b2-66efdf9a2592
+  Location: 936a7b86-a223-4a22-97b2-66efdf9a2592
 ```
 
 **CURL snippet**
@@ -184,7 +184,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 **Location Header**
 
 ```
-    Location: 14ec8c64-098b-4dca-b283-83e4ef23c340
+  Location: 14ec8c64-098b-4dca-b283-83e4ef23c340
 ```
 
 **CURL snippet**
@@ -229,7 +229,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 **Location Header**
 
 ```
-    Location: b7770a92-f204-4b9e-b9b8-5a5e66da1543
+  Location: b7770a92-f204-4b9e-b9b8-5a5e66da1543
 ```
 
 **CURL snippet**
@@ -278,7 +278,7 @@ Authorization: Token MTQ1NzM1ODIwMDI1MTo0Y2M4MWQ4ZS03MjFjLTQ5ZDItYmVmMy00M2EzNjh
 **Location Header**
 
 ```
-    Location: 6aa70e90-715f-4d98-9898-35d594657ea8
+  Location: 6aa70e90-715f-4d98-9898-35d594657ea8
 ```
 
 **CURL snippet**
