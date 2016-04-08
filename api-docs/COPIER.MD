@@ -17,7 +17,7 @@ Features
 | Name | Summary |
 |------------------------|--------|
 | HTTP Method | POST |
-| End Point | /api/nucleus-copier/{version}/resources/{id} |
+| End Point | /api/nucleus/v1/copier/resources/{{resourceId}} |
 | Auth | Required |
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
@@ -54,7 +54,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Name | Summary |
 |------------------------|--------|
 | HTTP Method | POST |
-| End Point | /api/nucleus/{version}/questions/{id} |
+| End Point | /api/nucleus/v1/copier/questions/{{questionId}} |
 | Auth | Required |
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
@@ -91,7 +91,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Name | Summary |
 |------------------------|--------|
 | HTTP Method | POST |
-| End Point | /api/nucleus/{version}/collections/{collection-id} |
+| End Point | /api/nucleus/v1/copier/collections/{{collectionId}} |
 | Auth | Required |
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
@@ -127,7 +127,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Name | Summary |
 |------------------------|--------|
 | HTTP Method | POST |
-| End Point | /api/nucleus/{version}/assessments/{assessment-id} |
+| End Point | /api/nucleus/v1/copier/assessments/{{assessmentId}} |
 | Auth | Required |
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
@@ -167,7 +167,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Name | Summary |
 |------------------------|--------|
 | HTTP Method | POST |
-| End Point | /api/nucleus/{version}/courses/{id} |
+| End Point | /api/nucleus/v1/copier/courses/{{courseId}} |
 | Auth | Required |
 | Request Body Type | None |
 | Request Body  | None |
@@ -200,7 +200,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Name | Summary |
 |------------------------|--------|
 | HTTP Method | POST |
-| End Point | /api/nucleus/{version}/courses/{course-id}/units/{unit-id} |
+| End Point | /api/nucleus/v1/copier/courses/{{courseId}}/units/{{unitId}} |
 | Auth | Required |
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
@@ -247,7 +247,7 @@ curl -i  -H "Content-Type: application/json" -H "Authorization: Token MTQ1NzM1OD
 | Name | Summary |
 |------------------------|--------|
 | HTTP Method | POST |
-| End Point | /api/nucleus/{version}/courses/{course-id}/units/{unit-id}/lessons/{lesson-id} |
+| End Point | /api/nucleus/v1/copier/courses/{{courseId}}/units/{{unitId}}/lessons/{{lessonId}} |
 | Auth | Required |
 | Request Body Type | JSON |
 | Response Code | 201 Successful |
