@@ -18,65 +18,73 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class CopyAssessmentHandler implements DBHandler {
-  private final ProcessorContext context;
-  private AJEntityCollection collection;
-  private final Logger LOGGER = LoggerFactory.getLogger(CopyAssessmentHandler.class);
-  private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
+    private final ProcessorContext context;
+    private AJEntityCollection collection;
+    private final Logger LOGGER = LoggerFactory.getLogger(CopyAssessmentHandler.class);
+    private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
 
-  public CopyAssessmentHandler(ProcessorContext context) {
-    this.context = context;
-  }
-
-  @Override
-  public ExecutionResult<MessageResponse> checkSanity() {
-    if (!FieldValidator.validateUser(context.userId())) {
-      LOGGER.warn("Anonymous user attempting to copy assessment");
-      return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(), ExecutionResult.ExecutionStatus.FAILED);
+    public CopyAssessmentHandler(ProcessorContext context) {
+        this.context = context;
     }
-    if (!FieldValidator.validateId(context.assessmentId())) {
-      LOGGER.error("Invalid request, source assessment id not available. Aborting");
-      return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP004)),
-          ExecutionResult.ExecutionStatus.FAILED);
+
+    @Override
+    public ExecutionResult<MessageResponse> checkSanity() {
+        if (!FieldValidator.validateUser(context.userId())) {
+            LOGGER.warn("Anonymous user attempting to copy assessment");
+            return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(),
+                ExecutionResult.ExecutionStatus.FAILED);
+        }
+        if (!FieldValidator.validateId(context.assessmentId())) {
+            LOGGER.error("Invalid request, source assessment id not available. Aborting");
+            return new ExecutionResult<>(
+                MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP004)),
+                ExecutionResult.ExecutionStatus.FAILED);
+        }
+        return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
     }
-    return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-  }
 
-  @Override
-  public ExecutionResult<MessageResponse> validateRequest() {
-    // Fetch the content where type is assessment and it is not deleted already
-    // and id is specified id
+    @Override
+    public ExecutionResult<MessageResponse> validateRequest() {
+        // Fetch the content where type is assessment and it is not deleted
+        // already
+        // and id is specified id
 
-    LazyList<AJEntityCollection> assessments =
-        AJEntityCollection.where(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.ASSESSEMENT, this.context.assessmentId(), false);
-    // Assessment should be present in DB
-    if (assessments.size() < 1) {
-      LOGGER.warn("Assessment id: {} not present in DB", context.assessmentId());
-      return new ExecutionResult<>(MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP014)),
-          ExecutionResult.ExecutionStatus.FAILED);
+        LazyList<AJEntityCollection> assessments = AJEntityCollection.where(AJEntityCollection.AUTHORIZER_QUERY,
+            AJEntityCollection.ASSESSEMENT, this.context.assessmentId(), false);
+        // Assessment should be present in DB
+        if (assessments.size() < 1) {
+            LOGGER.warn("Assessment id: {} not present in DB", context.assessmentId());
+            return new ExecutionResult<>(
+                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP014)),
+                ExecutionResult.ExecutionStatus.FAILED);
+        }
+        this.collection = assessments.get(0);
+        return AuthorizerBuilder.buildCopyAssessmentAuthorizer(this.context).authorize(this.collection);
+
     }
-    this.collection = assessments.get(0);
-    return AuthorizerBuilder.buildCopyAssessmentAuthorizer(this.context).authorize(this.collection);
 
-  }
+    @Override
+    public ExecutionResult<MessageResponse> executeRequest() {
+        final String copyAssessmentId = UUID.randomUUID().toString();
+        final UUID userId = UUID.fromString(context.userId());
+        final UUID assessmentId = UUID.fromString(context.assessmentId());
+        int count = Base.exec(AJEntityCollection.COPY_ASSESSMENT_QUERY, UUID.fromString(copyAssessmentId), userId,
+            userId, userId, assessmentId, assessmentId);
+        if (count == 0) {
+            return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
+                ExecutionResult.ExecutionStatus.FAILED);
+        }
+        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, userId, userId, UUID.fromString(copyAssessmentId),
+            assessmentId);
 
-  @Override
-  public ExecutionResult<MessageResponse> executeRequest() {
-    final String copyAssessmentId = UUID.randomUUID().toString();
-    final UUID userId = UUID.fromString(context.userId());
-    final UUID assessmentId = UUID.fromString(context.assessmentId());
-    int count =
-        Base.exec(AJEntityCollection.COPY_ASSESSMENT_QUERY, UUID.fromString(copyAssessmentId), userId, userId, userId, assessmentId, assessmentId);
-    if (count == 0) {
-      return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(), ExecutionResult.ExecutionStatus.FAILED);
+        return new ExecutionResult<>(
+            MessageResponseFactory.createCreatedResponse(copyAssessmentId,
+                EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId)),
+            ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
-    Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, userId, userId, UUID.fromString(copyAssessmentId), assessmentId);
 
-    return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyAssessmentId,
-        EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId)), ExecutionResult.ExecutionStatus.SUCCESSFUL);
-  }
-
-  @Override
-  public boolean handlerReadOnly() {
-    return false;
-  }
+    @Override
+    public boolean handlerReadOnly() {
+        return false;
+    }
 }

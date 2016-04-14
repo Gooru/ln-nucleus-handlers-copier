@@ -7,14 +7,14 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.tran
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 
 public class AJLessonRepo implements LessonRepo {
-  private final ProcessorContext context;
+    private final ProcessorContext context;
 
-  public AJLessonRepo(ProcessorContext context) {
-    this.context = context;
-  }
+    public AJLessonRepo(ProcessorContext context) {
+        this.context = context;
+    }
 
-  @Override
-  public MessageResponse copyLesson() {
-    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyLessonHandler(context));
-  }
+    @Override
+    public MessageResponse copyLesson() {
+        return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyLessonHandler(context));
+    }
 }

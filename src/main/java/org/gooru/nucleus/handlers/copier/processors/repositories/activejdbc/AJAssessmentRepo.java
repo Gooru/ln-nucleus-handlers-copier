@@ -7,15 +7,15 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.tran
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 
 public class AJAssessmentRepo implements AssessmentRepo {
-  private final ProcessorContext context;
+    private final ProcessorContext context;
 
-  public AJAssessmentRepo(ProcessorContext context) {
-    this.context = context;
-  }
+    public AJAssessmentRepo(ProcessorContext context) {
+        this.context = context;
+    }
 
-  @Override
-  public MessageResponse copyAssessment() {
-    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyAssessmentHandler(context));
-  }
+    @Override
+    public MessageResponse copyAssessment() {
+        return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyAssessmentHandler(context));
+    }
 
 }
