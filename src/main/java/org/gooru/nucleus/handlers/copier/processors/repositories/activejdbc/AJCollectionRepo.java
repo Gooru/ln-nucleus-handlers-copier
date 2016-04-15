@@ -7,15 +7,15 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.tran
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 
 public class AJCollectionRepo implements CollectionRepo {
-  private final ProcessorContext context;
+    private final ProcessorContext context;
 
-  public AJCollectionRepo(ProcessorContext context) {
-    this.context = context;
-  }
+    public AJCollectionRepo(ProcessorContext context) {
+        this.context = context;
+    }
 
-  @Override
-  public MessageResponse copyCollection() {
-    return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyCollectionHandler(context));
+    @Override
+    public MessageResponse copyCollection() {
+        return TransactionExecutor.executeTransaction(DBHandlerBuilder.buildCopyCollectionHandler(context));
 
-  }
+    }
 }

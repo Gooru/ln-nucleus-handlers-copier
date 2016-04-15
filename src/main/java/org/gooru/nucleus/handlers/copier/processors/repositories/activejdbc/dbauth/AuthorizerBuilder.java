@@ -8,36 +8,36 @@ import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 
 public final class AuthorizerBuilder {
 
-  private AuthorizerBuilder() {
-    throw new AssertionError();
-  }
+    private AuthorizerBuilder() {
+        throw new AssertionError();
+    }
 
-  public static Authorizer<AJEntityContent> buildCopyResourceAuthorizer(ProcessorContext context) {
-    return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-  }
+    public static Authorizer<AJEntityContent> buildCopyResourceAuthorizer(ProcessorContext context) {
+        return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+    }
 
-  public static Authorizer<AJEntityContent> buildCopyQuestionAuthorizer(ProcessorContext context) {
-    return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-  }
+    public static Authorizer<AJEntityContent> buildCopyQuestionAuthorizer(ProcessorContext context) {
+        return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+    }
 
-  public static Authorizer<AJEntityCollection> buildCopyCollectionAuthorizer(ProcessorContext context) {
-    return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-  }
+    public static Authorizer<AJEntityCollection> buildCopyCollectionAuthorizer(ProcessorContext context) {
+        return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+    }
 
-  public static Authorizer<AJEntityCollection> buildCopyAssessmentAuthorizer(ProcessorContext context) {
-    return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-  }
+    public static Authorizer<AJEntityCollection> buildCopyAssessmentAuthorizer(ProcessorContext context) {
+        return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+    }
 
-  public static Authorizer<AJEntityCourse> buildCopyCourseAuthorizer(ProcessorContext context) {
-    return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-  }
+    public static Authorizer<AJEntityCourse> buildCopyCourseAuthorizer(ProcessorContext context) {
+        return model -> new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+    }
 
-  public static Authorizer<AJEntityCourse> buildCopyUnitAuthorizer(ProcessorContext context) {
-    return new CopyULCAuthorizer(context);
-  }
+    public static Authorizer<AJEntityCourse> buildCopyUnitAuthorizer(ProcessorContext context) {
+        return new CopyULCAuthorizer(context);
+    }
 
-  public static Authorizer<AJEntityCourse> buildCopyLessonAuthorizer(ProcessorContext context) {
-    return new CopyULCAuthorizer(context);
-  }
+    public static Authorizer<AJEntityCourse> buildCopyLessonAuthorizer(ProcessorContext context) {
+        return new CopyULCAuthorizer(context);
+    }
 
 }

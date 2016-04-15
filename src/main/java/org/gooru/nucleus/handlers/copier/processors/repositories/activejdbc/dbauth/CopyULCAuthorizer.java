@@ -14,35 +14,36 @@ import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFac
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 class CopyULCAuthorizer implements Authorizer<AJEntityCourse> {
 
-  private final ProcessorContext context;
-  private final Logger LOG = LoggerFactory.getLogger(Authorizer.class);
-  private final ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
+    private final ProcessorContext context;
+    private final Logger LOG = LoggerFactory.getLogger(Authorizer.class);
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
 
-  CopyULCAuthorizer(ProcessorContext context) {
-    this.context = context;
-  }
+    CopyULCAuthorizer(ProcessorContext context) {
+        this.context = context;
+    }
 
-  @Override
-  public ExecutionResult<MessageResponse> authorize(AJEntityCourse course) {
-    String ownerId = course.getString(ParameterConstants.OWNER_ID);
-    //  user should be either owner or collaborator on target course 
-    if (context.userId().equalsIgnoreCase(ownerId)) {
-      return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-    } else {
-        String collaborators = course.getString(ParameterConstants.COLLABORATOR);
-        if (collaborators != null && !collaborators.isEmpty()) {
-          JsonArray collaboratorsArray = new JsonArray(collaborators);
-          if (collaboratorsArray.contains(context.userId())) {
+    @Override
+    public ExecutionResult<MessageResponse> authorize(AJEntityCourse course) {
+        String ownerId = course.getString(ParameterConstants.OWNER_ID);
+        // user should be either owner or collaborator on target course
+        if (context.userId().equalsIgnoreCase(ownerId)) {
             return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
-          }
+        } else {
+            String collaborators = course.getString(ParameterConstants.COLLABORATOR);
+            if (collaborators != null && !collaborators.isEmpty()) {
+                JsonArray collaboratorsArray = new JsonArray(collaborators);
+                if (collaboratorsArray.contains(context.userId())) {
+                    return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+                }
+            }
         }
-      }
-    LOG.warn("User: '{}' is not owner/collaborator of target course: '{}' or owner/collaborator on course", context.userId(), context.courseId());
-  
-    return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(resourceBundle.getString(MessageCodeConstants.CP010)),
-      ExecutionResult.ExecutionStatus.FAILED);
-  }
+        LOG.warn("User: '{}' is not owner/collaborator of target course: '{}' or owner/collaborator on course",
+            context.userId(), context.courseId());
+
+        return new ExecutionResult<>(
+            MessageResponseFactory.createForbiddenResponse(resourceBundle.getString(MessageCodeConstants.CP010)),
+            ExecutionResult.ExecutionStatus.FAILED);
+    }
 }
