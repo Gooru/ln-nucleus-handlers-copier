@@ -76,7 +76,7 @@ class CopyQuestionHandler implements DBHandler {
         }
         return new ExecutionResult<>(
             MessageResponseFactory.createCreatedResponse(questionId,
-                EventBuilderFactory.getCopyResourceEventBuilder(questionId)),
+                EventBuilderFactory.getCopyQuestionEventBuilder(questionId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 
