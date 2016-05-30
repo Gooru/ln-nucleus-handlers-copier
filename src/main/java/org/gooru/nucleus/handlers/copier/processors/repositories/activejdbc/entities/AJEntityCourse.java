@@ -9,12 +9,12 @@ public class AJEntityCourse extends Model {
     public static final String COPY_COURSE =
         "insert into course(id, title, description, owner_id, creator_id, modifier_id, original_creator_id, "
             + "original_course_id, parent_course_id, thumbnail, metadata, taxonomy, collaborator, sequence_id, "
-            + "subject_bucket) select ?, title, description, ?, ?, ?, coalesce(original_creator_id, creator_id) as "
-            + "original_creator_id, coalesce(original_course_id, ?) as original_course_id, ?, thumbnail, metadata, "
-            + "taxonomy, collaborator, (select (coalesce(max(co.sequence_id), 0) + 1) as sequence_id from course co "
-            + "where (co.collaborator  @> ?::jsonb or co.owner_id = ?) and CASE WHEN c.subject_bucket is null THEN co"
-            + ".subject_bucket is null ELSE co.subject_bucket = c.subject_bucket END) as sequence_id, subject_bucket "
-            + "from course c where id = ? and is_deleted = false";
+            + "subject_bucket, use_case) select ?, title, description, ?, ?, ?, coalesce(original_creator_id, "
+            + "creator_id) as original_creator_id, coalesce(original_course_id, ?) as original_course_id, ?, "
+            + "thumbnail, metadata, taxonomy, collaborator, (select (coalesce(max(co.sequence_id), 0) + 1) as "
+            + "sequence_id from course co where (co.collaborator  @> ?::jsonb or co.owner_id = ?) and CASE WHEN c"
+            + ".subject_bucket is null THEN co.subject_bucket is null ELSE co.subject_bucket = c.subject_bucket END) "
+            + "as sequence_id, subject_bucket, use_case from course c where id = ? and is_deleted = false";
     public static final String COPY_UNIT =
         "insert into unit(course_id, unit_id, title, owner_id, creator_id, modifier_id, original_creator_id, "
             + "original_unit_id, parent_unit_id, big_ideas, essential_questions, metadata, taxonomy, sequence_id) "
