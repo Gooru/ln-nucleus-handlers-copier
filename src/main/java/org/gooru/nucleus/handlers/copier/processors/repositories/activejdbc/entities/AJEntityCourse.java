@@ -42,13 +42,13 @@ public class AJEntityCourse extends Model {
         "insert into content(id, course_id, unit_id, lesson_id, collection_id, title, creator_id, modifier_id, "
             + "original_creator_id, original_content_id, parent_content_id, narration, description, content_format, "
             + "content_subformat, answer, metadata, taxonomy, hint_explanation_detail, thumbnail, is_copyright_owner,"
-            + " copyright_owner, info, display_guide, accessibility, url) select gen_random_uuid(), c.course_id, c"
+            + " copyright_owner, info, display_guide, accessibility, url, sequence_id) select gen_random_uuid(), c.course_id, c"
             + ".unit_id, c.lesson_id, c.id, ct.title, ?, ?, coalesce(ct.original_creator_id, ct.creator_id) as "
             + "original_creator_id, coalesce(ct.original_content_id, ct.id) as original_content_id, CASE WHEN ct"
             + ".content_format = 'resource' THEN coalesce(ct.parent_content_id,ct.id) ELSE ct.id END as "
             + "parent_content_id,ct.narration, ct.description, ct.content_format, ct.content_subformat, ct.answer, ct"
             + ".metadata, ct.taxonomy, ct.hint_explanation_detail, ct.thumbnail, ct.is_copyright_owner, ct"
-            + ".copyright_owner, ct.info, ct.display_guide, ct.accessibility, ct.url from content ct inner join "
+            + ".copyright_owner, ct.info, ct.display_guide, ct.accessibility, ct.url, ct.sequence_id from content ct inner join "
             + "collection c on c.parent_collection_id = ct.collection_id   where c.course_id = ? and ct.course_id = ?"
             + " and c.is_deleted  = false";
 }

@@ -17,7 +17,7 @@ public class AJEntityCollection extends Model {
     public static final String COPY_COLLECTION_QUERY =
         "insert into collection(id, title, owner_id, creator_id, modifier_id, original_creator_id, "
             + "original_collection_id, parent_collection_id , format, thumbnail, learning_objective, metadata, "
-            + "taxonomy, url, login_required, setting, grading) select ?, title, ?, ?, ?, coalesce(original_creator_id, creator_id) as original_creator_id, "
+            + "taxonomy, url, login_required, setting, grading) select title, ?, ?, ?, coalesce(original_creator_id, creator_id) as original_creator_id, "
             + "coalesce(original_collection_id, id) as original_collection_id , ?, format, thumbnail, learning_objective,"
             + " metadata, taxonomy, url, login_required, setting, grading from collection where id = ? and "
             + "format='collection'";
@@ -34,11 +34,11 @@ public class AJEntityCollection extends Model {
         "insert into content(id, title, url, creator_id, modifier_id, original_creator_id, original_content_id, "
             + "parent_content_id, publish_date, narration, description, content_format, content_subformat, answer,  "
             + "metadata,taxonomy, hint_explanation_detail, thumbnail, collection_id, is_copyright_owner, "
-            + "copyright_owner, info, visible_on_profile, display_guide, accessibility) select gen_random_uuid() as "
+            + "copyright_owner, info, visible_on_profile, display_guide, accessibility, sequence_id) select gen_random_uuid() as "
             + "id , title, url, ?, ?, coalesce(original_creator_id, creator_id) as original_creator_id, coalesce"
             + "(original_content_id,id) as original_content_id , CASE WHEN content_format = 'resource' THEN coalesce"
             + "(parent_content_id,id) ELSE id END as parent_content_id, publish_date, narration, description, "
             + "content_format, content_subformat, answer,  metadata,taxonomy, hint_explanation_detail, thumbnail, ?, "
-            + "is_copyright_owner , copyright_owner, info, visible_on_profile, display_guide, accessibility from "
+            + "is_copyright_owner , copyright_owner, info, visible_on_profile, display_guide, accessibility, sequence_id from "
             + "content where collection_id = ?";
 }
