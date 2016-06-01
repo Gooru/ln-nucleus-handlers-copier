@@ -17,7 +17,7 @@ public class AJEntityCollection extends Model {
     public static final String COPY_COLLECTION_QUERY =
         "insert into collection(id, title, owner_id, creator_id, modifier_id, original_creator_id, "
             + "original_collection_id, parent_collection_id , format, thumbnail, learning_objective, metadata, "
-            + "taxonomy, url, login_required, setting, grading) select title, ?, ?, ?, coalesce(original_creator_id, creator_id) as original_creator_id, "
+            + "taxonomy, url, login_required, setting, grading) select ?, title, ?, ?, ?, coalesce(original_creator_id, creator_id) as original_creator_id, "
             + "coalesce(original_collection_id, id) as original_collection_id , ?, format, thumbnail, learning_objective,"
             + " metadata, taxonomy, url, login_required, setting, grading from collection where id = ? and "
             + "format='collection'";
