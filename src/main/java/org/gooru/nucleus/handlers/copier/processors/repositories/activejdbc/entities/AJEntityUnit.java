@@ -42,6 +42,6 @@ public class AJEntityUnit extends Model {
             + "ct.metadata, ct.taxonomy, ct.hint_explanation_detail, ct.thumbnail, ct.is_copyright_owner, "
             + "ct.copyright_owner, ct.info, ct.display_guide, ct.accessibility, ct.url, ct.sequence_id from content ct inner join "
             + "collection c on c.parent_collection_id = ct.collection_id   where c.unit_id = ? and ct.unit_id = ? "
-            + "and c.is_deleted  = false";
+            + "and c.is_deleted  = false and ct.is_deleted  = false";
 
 }
