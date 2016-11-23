@@ -8,6 +8,7 @@ import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilderFactory;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbauth.AuthorizerBuilder;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityContent;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityOriginalResource;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.validators.FieldValidator;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
@@ -22,6 +23,7 @@ class CopyResourceHandler implements DBHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(CopyResourceHandler.class);
     private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
     private AJEntityContent targetContent;
+    private AJEntityOriginalResource targetOriginalResource;
 
     public CopyResourceHandler(ProcessorContext context) {
         this.context = context;
@@ -46,37 +48,54 @@ class CopyResourceHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> validateRequest() {
-        // Fetch the content where type is resource and it is not deleted
-        // already
-        // and id is specified id
-        LazyList<AJEntityContent> resources = AJEntityContent.where(AJEntityContent.AUTHORIZER_QUERY,
-            AJEntityContent.RESOURCE, this.context.resourceId(), false);
-        // Resource should be present in DB
-        if (resources.size() < 1) {
-            LOGGER.warn("Resource id: {} not present in DB", context.resourceId());
-            return new ExecutionResult<>(
-                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP011)),
-                ExecutionResult.ExecutionStatus.FAILED);
+        // Check the resource in original table first, if not then fall back on
+        // content table
+        LazyList<AJEntityOriginalResource> originalResources =
+            AJEntityOriginalResource.where(AJEntityOriginalResource.AUTHORIZER_QUERY, this.context.resourceId(), false);
+        if (originalResources.size() < 1) {
+            LazyList<AJEntityContent> resources = AJEntityContent.where(AJEntityContent.AUTHORIZER_QUERY,
+                AJEntityContent.RESOURCE, this.context.resourceId(), false);
+            // Resource should be present in DB
+            if (resources.size() < 1) {
+                LOGGER.warn("Resource id: {} not present in DB", context.resourceId());
+                return new ExecutionResult<>(
+                    MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP011)),
+                    ExecutionResult.ExecutionStatus.FAILED);
+            }
+            this.targetContent = resources.get(0);
+            LOGGER.info("copying resource reference '{}'", this.context.resourceId());
+        } else {
+            this.targetOriginalResource = originalResources.get(0);
+            LOGGER.info("copying original resource '{}'", this.context.resourceId());
         }
-        this.targetContent = resources.get(0);
+
         return AuthorizerBuilder.buildCopyResourceAuthorizer(this.context).authorize(targetContent);
 
     }
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final String resourceId = UUID.randomUUID().toString();
+        final String newResourceId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(this.context.userId());
-        final UUID parentResourceId = UUID.fromString(this.context.resourceId());
-        int count = Base.exec(AJEntityContent.COPY_RESOURCE_QUERY, UUID.fromString(resourceId), userId, userId,
-            parentResourceId, parentResourceId, parentResourceId);
+        final UUID resourceId = UUID.fromString(this.context.resourceId());
+        int count = 0;
+
+        if (this.targetOriginalResource != null) {
+            count = Base.exec(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, UUID.fromString(newResourceId), userId, userId,
+                resourceId, resourceId, resourceId);
+        } else {
+            final UUID originalContentId = UUID.fromString(this.targetContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID));
+            final UUID originalCreatorId = UUID.fromString(this.targetContent.getString(AJEntityContent.ORIGINAL_CREATOR_ID));
+            count = Base.exec(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, UUID.fromString(newResourceId), userId,
+                userId, originalCreatorId, originalContentId, resourceId, resourceId);
+        }
         if (count == 0) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
         return new ExecutionResult<>(
-            MessageResponseFactory.createCreatedResponse(resourceId,
-                EventBuilderFactory.getCopyResourceEventBuilder(resourceId)),
+            MessageResponseFactory.createCreatedResponse(newResourceId,
+                EventBuilderFactory.getCopyResourceEventBuilder(newResourceId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 
