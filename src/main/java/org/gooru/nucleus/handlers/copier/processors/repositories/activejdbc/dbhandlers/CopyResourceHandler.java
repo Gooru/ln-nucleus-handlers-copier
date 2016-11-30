@@ -22,8 +22,8 @@ class CopyResourceHandler implements DBHandler {
     private final ProcessorContext context;
     private final Logger LOGGER = LoggerFactory.getLogger(CopyResourceHandler.class);
     private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
-    private AJEntityContent targetContent;
-    private AJEntityOriginalResource targetOriginalResource;
+    private AJEntityContent sourceContent;
+    private AJEntityOriginalResource sourceOriginalResource;
 
     public CopyResourceHandler(ProcessorContext context) {
         this.context = context;
@@ -62,14 +62,14 @@ class CopyResourceHandler implements DBHandler {
                     MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP011)),
                     ExecutionResult.ExecutionStatus.FAILED);
             }
-            this.targetContent = resources.get(0);
+            this.sourceContent = resources.get(0);
             LOGGER.info("copying resource reference '{}'", this.context.resourceId());
         } else {
-            this.targetOriginalResource = originalResources.get(0);
+            this.sourceOriginalResource = originalResources.get(0);
             LOGGER.info("copying original resource '{}'", this.context.resourceId());
         }
 
-        return AuthorizerBuilder.buildCopyResourceAuthorizer(this.context).authorize(targetContent);
+        return AuthorizerBuilder.buildCopyResourceAuthorizer(this.context).authorize(sourceContent);
 
     }
 
@@ -78,15 +78,17 @@ class CopyResourceHandler implements DBHandler {
         final String newResourceId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(this.context.userId());
         final UUID resourceId = UUID.fromString(this.context.resourceId());
+        String title = this.context.request().getString("title");
         int count = 0;
 
-        if (this.targetOriginalResource != null) {
+        if (this.sourceOriginalResource != null) {
             count = Base.exec(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, UUID.fromString(newResourceId), userId, userId,
                 resourceId, resourceId, resourceId);
         } else {
-            final UUID originalContentId = UUID.fromString(this.targetContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID));
-            final UUID originalCreatorId = UUID.fromString(this.targetContent.getString(AJEntityContent.ORIGINAL_CREATOR_ID));
-            count = Base.exec(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, UUID.fromString(newResourceId), userId,
+            final UUID originalContentId = UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID));
+            final UUID originalCreatorId = UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CREATOR_ID));
+            title = title != null && !title.isEmpty() ? title : this.sourceContent.getString(AJEntityContent.TITLE);
+            count = Base.exec(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, UUID.fromString(newResourceId), title, userId,
                 userId, originalCreatorId, originalContentId, resourceId, resourceId);
         }
         if (count == 0) {

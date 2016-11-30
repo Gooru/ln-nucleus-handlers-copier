@@ -12,6 +12,7 @@ public class AJEntityContent extends Model {
     
     public static final String ORIGINAL_CONTENT_ID = "original_content_id";
     public static final String ORIGINAL_CREATOR_ID = "original_creator_id";
+    public static final String TITLE = "title";
 
     public static final String AUTHORIZER_QUERY =
         "content_format = ?::content_format_type and id = ?::uuid and is_deleted = ?";
@@ -27,7 +28,7 @@ public class AJEntityContent extends Model {
     public static final String COPY_REFERENCE_RESOURCE_QUERY =
         "INSERT INTO content(id, title, url, creator_id, modifier_id, original_creator_id, original_content_id, parent_content_id, publish_date,"
         + " publish_status, narration, description, content_format, content_subformat, metadata, taxonomy, thumbnail, is_copyright_owner,"
-        + " copyright_owner, info, visible_on_profile, display_guide, accessibility, creator_system) SELECT ?, title, url, ?, ?, ?, ?, ?,"
+        + " copyright_owner, info, visible_on_profile, display_guide, accessibility, creator_system) SELECT ?, ?, url, ?, ?, ?, ?, ?,"
         + " publish_date, publish_status, narration, description, 'resource', content_subformat, metadata, taxonomy, thumbnail, is_copyright_owner,"
         + " copyright_owner, info, visible_on_profile, display_guide, accessibility, creator_system FROM content WHERE id = ?"
         + " AND is_deleted=false";
