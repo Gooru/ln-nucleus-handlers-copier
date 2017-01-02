@@ -1,15 +1,16 @@
 package org.gooru.nucleus.handlers.copier.processors;
 
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.JsonObject;
-
 import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
-import org.gooru.nucleus.handlers.copier.processors.repositories.RepoBuilder;
+import org.gooru.nucleus.handlers.copier.processors.commands.CommandProcessorBuilder;
+import org.gooru.nucleus.handlers.copier.processors.exceptions.VersionDeprecatedException;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
 
 class MessageProcessor implements Processor {
 
@@ -25,81 +26,21 @@ class MessageProcessor implements Processor {
 
     @Override
     public MessageResponse process() {
-        MessageResponse result;
         try {
-            // Validate the message itself
             ExecutionResult<MessageResponse> validateResult = validateAndInitialize();
             if (validateResult.isCompleted()) {
                 return validateResult.result();
             }
 
             final String msgOp = message.headers().get(MessageConstants.MSG_HEADER_OP);
-            switch (msgOp) {
-            case MessageConstants.MSG_OP_RESOURCE_COPY:
-                result = processResourceCopy();
-                break;
-            case MessageConstants.MSG_OP_QUESTION_COPY:
-                result = processQuestionCopy();
-                break;
-            case MessageConstants.MSG_OP_COLLECTION_COPY:
-                result = processCollectionCopy();
-                break;
-            case MessageConstants.MSG_OP_ASSESSMENT_COPY:
-                result = processAssessmentCopy();
-                break;
-            case MessageConstants.MSG_OP_COURSE_COPY:
-                result = processCourseCopy();
-                break;
-            case MessageConstants.MSG_OP_UNIT_COPY:
-                result = processUnitCopy();
-                break;
-            case MessageConstants.MSG_OP_LESSON_COPY:
-                result = processLessonCopy();
-                break;
-            default:
-                LOGGER.error("Invalid operation type passed in, not able to handle");
-                return MessageResponseFactory.createInvalidRequestResponse("Invalid operation");
-            }
-            return result;
+            return CommandProcessorBuilder.lookupBuilder(msgOp).build(createContext()).process();
+        } catch (VersionDeprecatedException e) {
+            LOGGER.error("Version is deprecated");
+            return MessageResponseFactory.createVersionDeprecatedResponse();
         } catch (Throwable e) {
             LOGGER.error("Unhandled exception in processing", e);
             return MessageResponseFactory.createInternalErrorResponse();
         }
-    }
-
-    private MessageResponse processResourceCopy() {
-        ProcessorContext context = createContext();
-        return RepoBuilder.buildResourceRepo(context).copyResource();
-    }
-
-    private MessageResponse processQuestionCopy() {
-        ProcessorContext context = createContext();
-        return RepoBuilder.buildQuestionRepo(context).copyQuestion();
-    }
-
-    private MessageResponse processCollectionCopy() {
-        ProcessorContext context = createContext();
-        return RepoBuilder.buildCollectionRepo(context).copyCollection();
-    }
-
-    private MessageResponse processAssessmentCopy() {
-        ProcessorContext context = createContext();
-        return RepoBuilder.buildAssessmentRepo(context).copyAssessment();
-    }
-
-    private MessageResponse processCourseCopy() {
-        ProcessorContext context = createContext();
-        return RepoBuilder.buildCourseRepo(context).copyCourse();
-    }
-
-    private MessageResponse processUnitCopy() {
-        ProcessorContext context = createContext();
-        return RepoBuilder.buildUnitRepo(context).copyUnit();
-    }
-
-    private MessageResponse processLessonCopy() {
-        ProcessorContext context = createContext();
-        return RepoBuilder.buildLessonRepo(context).copyLesson();
     }
 
     private ProcessorContext createContext() {
@@ -134,8 +75,6 @@ class MessageProcessor implements Processor {
             return new ExecutionResult<>(MessageResponseFactory.createInvalidRequestResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-
-        // All is well, continue processing
         return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
     }
 

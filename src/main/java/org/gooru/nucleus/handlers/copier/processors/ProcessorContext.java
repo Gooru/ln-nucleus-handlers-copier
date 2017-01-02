@@ -1,26 +1,26 @@
 package org.gooru.nucleus.handlers.copier.processors;
 
-import io.vertx.core.MultiMap;
-import io.vertx.core.json.JsonObject;
-
 import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
 import org.gooru.nucleus.handlers.copier.constants.ParameterConstants;
+
+import io.vertx.core.MultiMap;
+import io.vertx.core.json.JsonObject;
 
 public class ProcessorContext {
 
     final private String userId;
     final private JsonObject prefs;
     final private JsonObject request;
-    final private MultiMap headers;
+    final private MultiMap requestHeaders;
 
     public ProcessorContext(String userId, JsonObject prefs, JsonObject request, MultiMap headers) {
-        if (prefs == null || userId == null || prefs.isEmpty()) {
+        if (prefs == null || userId == null || prefs.isEmpty() || headers == null || headers.isEmpty()) {
             throw new IllegalStateException("Processor Context creation failed because of invalid values");
         }
         this.userId = userId;
         this.prefs = prefs.copy();
         this.request = request != null ? request.copy() : null;
-        this.headers = headers;
+        this.requestHeaders = headers;
     }
 
     public String userId() {
@@ -36,31 +36,31 @@ public class ProcessorContext {
     }
 
     public String resourceId() {
-        return this.headers != null ? this.headers.get(MessageConstants.RESOURCE_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.RESOURCE_ID) : null;
     }
 
     public String questionId() {
-        return this.headers != null ? this.headers.get(MessageConstants.QUESTION_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.QUESTION_ID) : null;
     }
 
     public String collectionId() {
-        return this.headers != null ? this.headers.get(MessageConstants.COLLECTION_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.COLLECTION_ID) : null;
     }
 
     public String assessmentId() {
-        return this.headers != null ? this.headers.get(MessageConstants.ASSESSMENT_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.ASSESSMENT_ID) : null;
     }
 
     public String courseId() {
-        return this.headers != null ? this.headers.get(MessageConstants.COURSE_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.COURSE_ID) : null;
     }
 
     public String unitId() {
-        return this.headers != null ? this.headers.get(MessageConstants.UNIT_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.UNIT_ID) : null;
     }
 
     public String lessonId() {
-        return this.headers != null ? this.headers.get(MessageConstants.LESSON_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.LESSON_ID) : null;
     }
 
     public String targetCourseId() {
@@ -79,7 +79,7 @@ public class ProcessorContext {
         return this.request != null ? this.request.getString(ParameterConstants.TARGET_COLLECTION_ID) : null;
     }
 
-    public MultiMap getHeaders() {
-        return headers;
+    public MultiMap requestHeaders() {
+        return requestHeaders;
     }
 }
