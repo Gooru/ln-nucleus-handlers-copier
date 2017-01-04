@@ -17,7 +17,7 @@ class MessageProcessor implements Processor {
     private final Logger LOGGER = LoggerFactory.getLogger(Processor.class);
     private final Message<Object> message;
     private String userId;
-    private JsonObject prefs;
+    private JsonObject session;
     private JsonObject request;
 
     public MessageProcessor(Message<Object> message) {
@@ -45,7 +45,7 @@ class MessageProcessor implements Processor {
 
     private ProcessorContext createContext() {
 
-        return new ProcessorContext(userId, prefs, request, message.headers());
+        return new ProcessorContext(userId, session, request, message.headers());
     }
 
     private ExecutionResult<MessageResponse> validateAndInitialize() {
@@ -61,11 +61,11 @@ class MessageProcessor implements Processor {
             return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        prefs = ((JsonObject) message.body()).getJsonObject(MessageConstants.MSG_KEY_PREFS);
+        session = ((JsonObject) message.body()).getJsonObject(MessageConstants.MSG_KEY_SESSION);
         request = ((JsonObject) message.body()).getJsonObject(MessageConstants.MSG_HTTP_BODY);
 
-        if (prefs == null || prefs.isEmpty()) {
-            LOGGER.error("Invalid preferences obtained, probably not authorized properly");
+        if (session == null || session.isEmpty()) {
+            LOGGER.error("Invalid session obtained, probably not authorized properly");
             return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
