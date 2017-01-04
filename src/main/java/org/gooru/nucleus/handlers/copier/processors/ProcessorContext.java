@@ -9,16 +9,16 @@ import io.vertx.core.json.JsonObject;
 public class ProcessorContext {
 
     final private String userId;
-    final private JsonObject prefs;
+    final private JsonObject session;
     final private JsonObject request;
     final private MultiMap requestHeaders;
 
-    public ProcessorContext(String userId, JsonObject prefs, JsonObject request, MultiMap headers) {
-        if (prefs == null || userId == null || prefs.isEmpty() || headers == null || headers.isEmpty()) {
+    public ProcessorContext(String userId, JsonObject session, JsonObject request, MultiMap headers) {
+        if (session == null || userId == null || session.isEmpty() || headers == null || headers.isEmpty()) {
             throw new IllegalStateException("Processor Context creation failed because of invalid values");
         }
         this.userId = userId;
-        this.prefs = prefs.copy();
+        this.session = session.copy();
         this.request = request != null ? request.copy() : null;
         this.requestHeaders = headers;
     }
@@ -27,8 +27,8 @@ public class ProcessorContext {
         return this.userId;
     }
 
-    public JsonObject prefs() {
-        return this.prefs.copy();
+    public JsonObject session() {
+        return this.session.copy();
     }
 
     public JsonObject request() {
