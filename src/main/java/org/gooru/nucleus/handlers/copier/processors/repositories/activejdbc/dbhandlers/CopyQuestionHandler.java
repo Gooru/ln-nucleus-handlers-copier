@@ -49,8 +49,8 @@ class CopyQuestionHandler implements DBHandler {
         // already
         // and id is specified id
 
-        LazyList<AJEntityContent> questions = AJEntityContent.where(AJEntityContent.AUTHORIZER_QUERY,
-            AJEntityContent.QUESTION, this.context.questionId(), false);
+        LazyList<AJEntityContent> questions = AJEntityContent
+            .where(AJEntityContent.AUTHORIZER_QUERY, AJEntityContent.QUESTION, this.context.questionId(), false);
         // Question should be present in DB
         if (questions.size() < 1) {
             LOGGER.warn("Question id: {} not present in DB", context.questionId());
@@ -68,15 +68,14 @@ class CopyQuestionHandler implements DBHandler {
         final String questionId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(context.userId());
         final UUID parentQuestionId = UUID.fromString(context.questionId());
-        int count = Base.exec(AJEntityContent.COPY_QUESTION_QUERY, UUID.fromString(questionId), userId, userId,
-            parentQuestionId, parentQuestionId, parentQuestionId);
+        int count = Base.exec(AJEntityContent.COPY_QUESTION_QUERY, UUID.fromString(questionId), context.tenant(),
+            context.tenantRoot(), userId, userId, parentQuestionId, parentQuestionId, parentQuestionId);
         if (count == 0) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        return new ExecutionResult<>(
-            MessageResponseFactory.createCreatedResponse(questionId,
-                EventBuilderFactory.getCopyQuestionEventBuilder(questionId)),
+        return new ExecutionResult<>(MessageResponseFactory
+            .createCreatedResponse(questionId, EventBuilderFactory.getCopyQuestionEventBuilder(questionId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 

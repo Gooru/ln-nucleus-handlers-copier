@@ -41,13 +41,14 @@ class CopyLessonHandler implements DBHandler {
         if (!FieldValidator.validateId(context.courseId()) || !FieldValidator.validateId(context.unitId())
             || !FieldValidator.validateId(context.lessonId())) {
             LOGGER.error(
-                "Invalid request, either source course id or source unit id or source lesson id not available. Aborting");
+                "Invalid request, either source course id or source unit id or source lesson id not available. "
+                    + "Aborting");
             return new ExecutionResult<>(
                 MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP007)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        if (!FieldValidator.validateId(context.targetCourseId())
-            || !FieldValidator.validateId(context.targetUnitId())) {
+        if (!FieldValidator.validateId(context.targetCourseId()) || !FieldValidator
+            .validateId(context.targetUnitId())) {
             LOGGER.error("Invalid request, either target course id or target unit id  not available. Aborting");
             return new ExecutionResult<>(
                 MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP008)),
@@ -98,19 +99,19 @@ class CopyLessonHandler implements DBHandler {
         final UUID lessonId = UUID.fromString(context.lessonId());
         final UUID targetCourseId = UUID.fromString(context.targetCourseId());
         final UUID targetUnitId = UUID.fromString(context.targetUnitId());
-        int count = Base.exec(AJEntityLesson.COPY_LESSON, targetCourseId, targetUnitId, copyLessonId, userId, userId,
-            userId, targetCourseId, targetUnitId, lessonId);
+        int count = Base.exec(AJEntityLesson.COPY_LESSON, targetCourseId, targetUnitId, copyLessonId, context.tenant(),
+            context.tenantRoot(), userId, userId, userId, targetCourseId, targetUnitId, lessonId);
         if (count > 0) {
             int collectionCount =
-                Base.exec(AJEntityLesson.COPY_COLLECTION, userId, userId, userId, copyLessonId, lessonId);
+                Base.exec(AJEntityLesson.COPY_COLLECTION, context.tenant(), context.tenantRoot(), userId, userId,
+                    userId, copyLessonId, lessonId);
             if (collectionCount > 0) {
-                Base.exec(AJEntityLesson.COPY_CONTENT, userId, userId, copyLessonId, lessonId);
+                Base.exec(AJEntityLesson.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId, copyLessonId, lessonId);
             }
             this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
             this.targetCourse.save();
-            return new ExecutionResult<>(
-                MessageResponseFactory.createCreatedResponse(copyLessonId.toString(),
-                    EventBuilderFactory.getCopyUnitEventBuilder(copyLessonId.toString())),
+            return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyLessonId.toString(),
+                EventBuilderFactory.getCopyUnitEventBuilder(copyLessonId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);
         }
         return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),

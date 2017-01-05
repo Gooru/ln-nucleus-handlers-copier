@@ -53,8 +53,8 @@ class CopyResourceHandler implements DBHandler {
         LazyList<AJEntityOriginalResource> originalResources =
             AJEntityOriginalResource.where(AJEntityOriginalResource.AUTHORIZER_QUERY, this.context.resourceId(), false);
         if (originalResources.size() < 1) {
-            LazyList<AJEntityContent> resources = AJEntityContent.where(AJEntityContent.AUTHORIZER_QUERY,
-                AJEntityContent.RESOURCE, this.context.resourceId(), false);
+            LazyList<AJEntityContent> resources = AJEntityContent
+                .where(AJEntityContent.AUTHORIZER_QUERY, AJEntityContent.RESOURCE, this.context.resourceId(), false);
             // Resource should be present in DB
             if (resources.size() < 1) {
                 LOGGER.warn("Resource id: {} not present in DB", context.resourceId());
@@ -82,22 +82,24 @@ class CopyResourceHandler implements DBHandler {
         int count = 0;
 
         if (this.sourceOriginalResource != null) {
-            count = Base.exec(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, UUID.fromString(newResourceId), userId, userId,
-                resourceId, resourceId, resourceId);
+            count = Base.exec(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, UUID.fromString(newResourceId),
+                context.tenant(), context.tenantRoot(), userId, userId, resourceId, resourceId, resourceId);
         } else {
-            final UUID originalContentId = UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID));
-            final UUID originalCreatorId = UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CREATOR_ID));
+            final UUID originalContentId =
+                UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID));
+            final UUID originalCreatorId =
+                UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CREATOR_ID));
             title = title != null && !title.isEmpty() ? title : this.sourceContent.getString(AJEntityContent.TITLE);
-            count = Base.exec(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, UUID.fromString(newResourceId), title, userId,
-                userId, originalCreatorId, originalContentId, resourceId, resourceId);
+            count = Base.exec(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, UUID.fromString(newResourceId),
+                context.tenant(), context.tenantRoot(), title, userId, userId, originalCreatorId, originalContentId,
+                resourceId, resourceId);
         }
         if (count == 0) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        return new ExecutionResult<>(
-            MessageResponseFactory.createCreatedResponse(newResourceId,
-                EventBuilderFactory.getCopyResourceEventBuilder(newResourceId)),
+        return new ExecutionResult<>(MessageResponseFactory
+            .createCreatedResponse(newResourceId, EventBuilderFactory.getCopyResourceEventBuilder(newResourceId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 

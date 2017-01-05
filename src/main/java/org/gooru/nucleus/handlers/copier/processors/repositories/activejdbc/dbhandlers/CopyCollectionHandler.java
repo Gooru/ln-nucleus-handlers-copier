@@ -49,8 +49,9 @@ class CopyCollectionHandler implements DBHandler {
         // already
         // and id is specified id
 
-        LazyList<AJEntityCollection> collections = AJEntityCollection.where(AJEntityCollection.AUTHORIZER_QUERY,
-            AJEntityCollection.COLLECTION, this.context.collectionId(), false);
+        LazyList<AJEntityCollection> collections = AJEntityCollection
+            .where(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.COLLECTION, this.context.collectionId(),
+                false);
         // Collection should be present in DB
         if (collections.size() < 1) {
             LOGGER.warn("Collection id: {} not present in DB", context.collectionId());
@@ -69,19 +70,19 @@ class CopyCollectionHandler implements DBHandler {
         final String copyCollectionId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(context.userId());
         final UUID collectionId = UUID.fromString(context.collectionId());
-        int count = Base.exec(AJEntityCollection.COPY_COLLECTION_QUERY, UUID.fromString(copyCollectionId), userId,
-            userId, userId, collectionId, collectionId);
+        int count =
+            Base.exec(AJEntityCollection.COPY_COLLECTION_QUERY, UUID.fromString(copyCollectionId), context.tenant(),
+                context.tenantRoot(), userId, userId, userId, collectionId, collectionId);
         if (count == 0) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
 
-        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, userId, userId, UUID.fromString(copyCollectionId),
-            collectionId);
+        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, context.tenant(), context.tenantRoot(), userId, userId,
+            UUID.fromString(copyCollectionId), collectionId);
 
-        return new ExecutionResult<>(
-            MessageResponseFactory.createCreatedResponse(copyCollectionId,
-                EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId)),
+        return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCollectionId,
+            EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 

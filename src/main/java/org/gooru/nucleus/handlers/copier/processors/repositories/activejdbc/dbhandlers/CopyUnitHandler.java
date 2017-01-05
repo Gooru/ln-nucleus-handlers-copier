@@ -82,22 +82,26 @@ class CopyUnitHandler implements DBHandler {
         final UUID userId = UUID.fromString(context.userId());
         final UUID unitId = UUID.fromString(context.unitId());
         final UUID targetCourseId = UUID.fromString(context.targetCourseId());
-        int count = Base.exec(AJEntityUnit.COPY_UNIT, targetCourseId, copyUnitId, userId, userId, userId,
-            targetCourseId, unitId);
+        int count =
+            Base.exec(AJEntityUnit.COPY_UNIT, targetCourseId, copyUnitId, context.tenant(), context.tenantRoot(),
+                userId, userId, userId, targetCourseId, unitId);
         if (count > 0) {
-            int lessonCount = Base.exec(AJEntityUnit.COPY_LESSON, userId, userId, userId, copyUnitId, unitId);
+            int lessonCount =
+                Base.exec(AJEntityUnit.COPY_LESSON, context.tenant(), context.tenantRoot(), userId, userId, userId,
+                    copyUnitId, unitId);
             if (lessonCount > 0) {
                 int collectionCount =
-                    Base.exec(AJEntityUnit.COPY_COLLECTION, userId, userId, userId, copyUnitId, unitId);
+                    Base.exec(AJEntityUnit.COPY_COLLECTION, context.tenant(), context.tenantRoot(), userId, userId,
+                        userId, copyUnitId, unitId);
                 if (collectionCount > 0) {
-                    Base.exec(AJEntityUnit.COPY_CONTENT, userId, userId, copyUnitId, unitId);
+                    Base.exec(AJEntityUnit.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
+                        copyUnitId, unitId);
                 }
             }
             this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
             this.targetCourse.save();
-            return new ExecutionResult<>(
-                MessageResponseFactory.createCreatedResponse(copyUnitId.toString(),
-                    EventBuilderFactory.getCopyUnitEventBuilder(copyUnitId.toString())),
+            return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyUnitId.toString(),
+                EventBuilderFactory.getCopyUnitEventBuilder(copyUnitId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);
         }
         return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),

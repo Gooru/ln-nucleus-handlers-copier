@@ -49,8 +49,9 @@ class CopyAssessmentHandler implements DBHandler {
         // already
         // and id is specified id
 
-        LazyList<AJEntityCollection> assessments = AJEntityCollection.where(AJEntityCollection.AUTHORIZER_QUERY,
-            AJEntityCollection.ASSESSEMENT, this.context.assessmentId(), false);
+        LazyList<AJEntityCollection> assessments = AJEntityCollection
+            .where(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.ASSESSEMENT, this.context.assessmentId(),
+                false);
         // Assessment should be present in DB
         if (assessments.size() < 1) {
             LOGGER.warn("Assessment id: {} not present in DB", context.assessmentId());
@@ -68,18 +69,18 @@ class CopyAssessmentHandler implements DBHandler {
         final String copyAssessmentId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(context.userId());
         final UUID assessmentId = UUID.fromString(context.assessmentId());
-        int count = Base.exec(AJEntityCollection.COPY_ASSESSMENT_QUERY, UUID.fromString(copyAssessmentId), userId,
-            userId, userId, assessmentId, assessmentId);
+        int count =
+            Base.exec(AJEntityCollection.COPY_ASSESSMENT_QUERY, UUID.fromString(copyAssessmentId), context.tenant(),
+                context.tenantRoot(), userId, userId, userId, assessmentId, assessmentId);
         if (count == 0) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, userId, userId, UUID.fromString(copyAssessmentId),
-            assessmentId);
+        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, context.tenant(), context.tenantRoot(), userId, userId,
+            UUID.fromString(copyAssessmentId), assessmentId);
 
-        return new ExecutionResult<>(
-            MessageResponseFactory.createCreatedResponse(copyAssessmentId,
-                EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId)),
+        return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyAssessmentId,
+            EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 
