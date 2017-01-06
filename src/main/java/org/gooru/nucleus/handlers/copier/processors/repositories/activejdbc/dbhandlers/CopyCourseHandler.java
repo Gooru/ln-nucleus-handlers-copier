@@ -66,23 +66,24 @@ class CopyCourseHandler implements DBHandler {
         final UUID copyCourseId = UUID.randomUUID();
         final UUID userId = UUID.fromString(context.userId());
         final UUID courseId = UUID.fromString(context.courseId());
-        int count = Base.exec(AJEntityCourse.COPY_COURSE, copyCourseId, userId, userId, userId, courseId, courseId,
-            "[\"" + userId + "\"]", userId, courseId);
+        int count =
+            Base.exec(AJEntityCourse.COPY_COURSE, copyCourseId, context.tenant(), context.tenantRoot(), userId, userId,
+                userId, courseId, courseId, "[\"" + userId + "\"]", userId, courseId);
         if (count > 0) {
-            int unitCount = Base.exec(AJEntityCourse.COPY_UNIT, copyCourseId, userId, userId, userId, courseId);
+            int unitCount = Base.exec(AJEntityCourse.COPY_UNIT, copyCourseId, context.tenant(), context.tenantRoot(), userId, userId, userId, courseId);
             if (unitCount > 0) {
-                int lessonCount = Base.exec(AJEntityCourse.COPY_LESSON, userId, userId, userId, copyCourseId, courseId);
+                int lessonCount = Base.exec(AJEntityCourse.COPY_LESSON, context.tenant(), context.tenantRoot(), userId, userId, userId, copyCourseId, courseId);
                 if (lessonCount > 0) {
                     int collectionCount =
-                        Base.exec(AJEntityCourse.COPY_COLLECTION, userId, userId, userId, copyCourseId, courseId);
+                        Base.exec(AJEntityCourse.COPY_COLLECTION, context.tenant(), context.tenantRoot(), userId, userId, userId, copyCourseId, courseId);
                     if (collectionCount > 0) {
-                        Base.exec(AJEntityCourse.COPY_CONTENT, userId, userId, copyCourseId, courseId);
+                        Base.exec(AJEntityCourse.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
+                            copyCourseId, courseId);
                     }
                 }
             }
-            return new ExecutionResult<>(
-                MessageResponseFactory.createCreatedResponse(copyCourseId.toString(),
-                    EventBuilderFactory.getCopyCourseEventBuilder(copyCourseId.toString())),
+            return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCourseId.toString(),
+                EventBuilderFactory.getCopyCourseEventBuilder(copyCourseId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);
         }
         return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
