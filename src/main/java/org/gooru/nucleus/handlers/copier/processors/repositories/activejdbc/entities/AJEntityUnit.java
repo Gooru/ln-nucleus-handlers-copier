@@ -45,4 +45,5 @@ public class AJEntityUnit extends Model {
             + ".parent_collection_id = ct.collection_id   where c.unit_id = ? and ct.unit_id = ? and c.is_deleted  = "
             + "false and ct.is_deleted  = false";
 
+    public static final String UNIT_EXISTS_QUERY = "course_id = ?::uuid and unit_id = ?::uuid and is_deleted = ?";
 }

@@ -54,4 +54,24 @@ public class AJEntityCourse extends Model {
             + ".is_copyright_owner, ct.copyright_owner, ct.info, ct.display_guide, ct.accessibility, ct.url, ct"
             + ".sequence_id from content ct inner join collection c on c.parent_collection_id = ct.collection_id "
             + "where c.course_id = ? and ct.course_id = ? and c.is_deleted  = false and ct.is_deleted = false";
+
+    private static final String TENANT = "tenant";
+    private static final String TENANT_ROOT = "tenant_root";
+    private static final String PUBLISH_STATUS = "publish_status";
+    private static final String PUBLISH_STATUS_TYPE_PUBLISHED = "published";
+
+
+    public boolean isCoursePublished() {
+        String publishStatus = this.getString(PUBLISH_STATUS);
+        return PUBLISH_STATUS_TYPE_PUBLISHED.equalsIgnoreCase(publishStatus);
+    }
+
+    public String getTenant() {
+        return this.getString(TENANT);
+    }
+
+    public String getTenantRoot() {
+        return this.getString(TENANT_ROOT);
+    }
+
 }

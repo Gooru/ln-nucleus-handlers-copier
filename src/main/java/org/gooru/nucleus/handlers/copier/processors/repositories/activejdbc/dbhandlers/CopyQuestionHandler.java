@@ -45,20 +45,17 @@ class CopyQuestionHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> validateRequest() {
-        // Fetch the content where type is question and it is not deleted
-        // already
-        // and id is specified id
+        // Fetch the content where type is question and it is not deleted already and id is specified id
 
-        LazyList<AJEntityContent> questions = AJEntityContent
-            .where(AJEntityContent.AUTHORIZER_QUERY, AJEntityContent.QUESTION, this.context.questionId(), false);
+        this.question = AJEntityContent
+            .findFirst(AJEntityContent.AUTHORIZER_QUERY, AJEntityContent.QUESTION, this.context.questionId(), false);
         // Question should be present in DB
-        if (questions.size() < 1) {
+        if (this.question == null) {
             LOGGER.warn("Question id: {} not present in DB", context.questionId());
             return new ExecutionResult<>(
                 MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP012)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        this.question = questions.get(0);
         return AuthorizerBuilder.buildCopyQuestionAuthorizer(this.context).authorize(question);
 
     }

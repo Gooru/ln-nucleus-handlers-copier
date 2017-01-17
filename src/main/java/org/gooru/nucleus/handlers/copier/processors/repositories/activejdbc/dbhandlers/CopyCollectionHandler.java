@@ -45,22 +45,18 @@ class CopyCollectionHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> validateRequest() {
-        // Fetch the content where type is collection and it is not deleted
-        // already
-        // and id is specified id
+        // Fetch the content where type is collection and it is not deleted already and id is specified id
 
-        LazyList<AJEntityCollection> collections = AJEntityCollection
-            .where(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.COLLECTION, this.context.collectionId(),
+        this.collection = AJEntityCollection
+            .findFirst(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.COLLECTION, this.context.collectionId(),
                 false);
         // Collection should be present in DB
-        if (collections.size() < 1) {
+        if (this.collection == null) {
             LOGGER.warn("Collection id: {} not present in DB", context.collectionId());
             return new ExecutionResult<>(
                 MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP013)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        this.collection = collections.get(0);
-
         return AuthorizerBuilder.buildCopyCollectionAuthorizer(this.context).authorize(this.collection);
 
     }

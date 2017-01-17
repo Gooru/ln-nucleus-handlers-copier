@@ -48,4 +48,38 @@ public class AJEntityContent extends Model {
             + "visible_on_profile, display_guide, accessibility from content where id = ? and "
             + "content_format='question' and is_deleted=false";
 
+    public static final String PUBLISHED_FILTER = "id = ?::uuid and publish_status = 'published'::publish_status_type;";
+
+    private static final String TENANT = "tenant";
+    private static final String TENANT_ROOT = "tenant_root";
+
+    private static final String PUBLISH_STATUS = "publish_status";
+    private static final String PUBLISH_STATUS_PUBLISHED = "published";
+    private static final String COLLECTION_ID = "collection_id";
+    private static final String COURSE_ID = "course_id";
+
+    public static final String TABLE_COURSE = "course";
+    public static final String TABLE_COLLECTION = "collection";
+
+    public String getTenant() {
+        return this.getString(TENANT);
+    }
+
+    public String getTenantRoot() {
+        return this.getString(TENANT_ROOT);
+    }
+
+    public boolean isPublished() {
+        String publishStatus = this.getString(PUBLISH_STATUS);
+        return PUBLISH_STATUS_PUBLISHED.equalsIgnoreCase(publishStatus);
+    }
+
+    public String getCourseId() {
+        return this.getString(COURSE_ID);
+    }
+
+    public String getCollectionId() {
+        return this.getString(COLLECTION_ID);
+    }
+
 }
