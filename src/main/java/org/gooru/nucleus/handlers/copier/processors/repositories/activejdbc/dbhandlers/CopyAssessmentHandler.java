@@ -13,13 +13,12 @@ import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class CopyAssessmentHandler implements DBHandler {
     private final ProcessorContext context;
-    private AJEntityCollection collection;
+    private AJEntityCollection assessment;
     private final Logger LOGGER = LoggerFactory.getLogger(CopyAssessmentHandler.class);
     private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
 
@@ -45,22 +44,18 @@ class CopyAssessmentHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> validateRequest() {
-        // Fetch the content where type is assessment and it is not deleted
-        // already
-        // and id is specified id
-
-        LazyList<AJEntityCollection> assessments = AJEntityCollection
-            .where(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.ASSESSEMENT, this.context.assessmentId(),
+        // Fetch the content where type is assessment and it is not deleted already and id is specified id
+        this.assessment = AJEntityCollection
+            .findFirst(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.ASSESSEMENT, this.context.assessmentId(),
                 false);
         // Assessment should be present in DB
-        if (assessments.size() < 1) {
+        if (this.assessment == null) {
             LOGGER.warn("Assessment id: {} not present in DB", context.assessmentId());
             return new ExecutionResult<>(
                 MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP014)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        this.collection = assessments.get(0);
-        return AuthorizerBuilder.buildCopyAssessmentAuthorizer(this.context).authorize(this.collection);
+        return AuthorizerBuilder.buildCopyAssessmentAuthorizer(this.context).authorize(this.assessment);
 
     }
 

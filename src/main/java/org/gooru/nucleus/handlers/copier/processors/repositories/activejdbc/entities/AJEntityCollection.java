@@ -1,5 +1,7 @@
 package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities;
 
+import java.util.Objects;
+
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.annotations.Table;
 
@@ -43,4 +45,30 @@ public class AJEntityCollection extends Model {
             + "content_format, content_subformat, answer,  metadata,taxonomy, hint_explanation_detail, thumbnail, ?, "
             + "is_copyright_owner , copyright_owner, info, visible_on_profile, display_guide, accessibility, sequence_id from "
             + "content where collection_id = ? and is_deleted = false";
+
+    private static final String PUBLISH_STATUS = "publish_status";
+    private static final String PUBLISH_STATUS_PUBLISHED = "published";
+    private static final String TENANT = "tenant";
+    private static final String TENANT_ROOT = "tenant_root";
+    private static final String COURSE_ID = "course_id";
+
+    public static final String TABLE_COURSE = "course";
+    public static final String PUBLISHED_FILTER = "id = ?::uuid and publish_status = 'published'::publish_status_type;";
+
+    public boolean isPublished() {
+        return Objects.equals(this.getString(PUBLISH_STATUS), PUBLISH_STATUS_PUBLISHED);
+    }
+
+    public String getCourseId() {
+        return this.getString(COURSE_ID);
+    }
+
+    public String getTenant() {
+        return this.getString(AJEntityCollection.TENANT);
+    }
+
+    public String getTenantRoot() {
+        return this.getString(AJEntityCollection.TENANT_ROOT);
+    }
+
 }

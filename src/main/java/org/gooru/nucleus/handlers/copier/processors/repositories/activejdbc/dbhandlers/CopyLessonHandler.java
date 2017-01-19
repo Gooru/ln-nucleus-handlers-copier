@@ -1,14 +1,15 @@
 package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbhandlers;
 
-import java.util.Date;
-import java.util.ResourceBundle;
-import java.util.UUID;
+import java.util.*;
 
 import org.gooru.nucleus.handlers.copier.constants.MessageCodeConstants;
 import org.gooru.nucleus.handlers.copier.constants.ParameterConstants;
 import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilderFactory;
+import org.gooru.nucleus.handlers.copier.processors.exceptions.ExecutionResultWrapperException;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbauth.AuthorizerBuilder;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbauth.AuthorizerChainElement;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbauth.AuthorizerChainRunner;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityCourse;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityLesson;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityUnit;
@@ -26,6 +27,7 @@ class CopyLessonHandler implements DBHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(CopyLessonHandler.class);
     private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
     private AJEntityCourse targetCourse;
+    private AJEntityCourse sourceCourse;
 
     public CopyLessonHandler(ProcessorContext context) {
         this.context = context;
@@ -59,37 +61,16 @@ class CopyLessonHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> validateRequest() {
-        LazyList<AJEntityLesson> lessons =
-            AJEntityLesson.where(AJEntityLesson.AUTHORIZER_QUERY, context.lessonId(), false);
-        // lesson should be present in DB
-        if (lessons.size() < 1) {
-            LOGGER.warn("Lesson id: {} not present in DB", context.lessonId());
-            return new ExecutionResult<>(
-                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP017)),
-                ExecutionResult.ExecutionStatus.FAILED);
+        try {
+            checkLessonExists();
+            checkTargetUnitExists();
+            initializeTargetCourse();
+            initializeSourceCourse();
+        } catch (ExecutionResultWrapperException ex) {
+            return ex.getResult();
         }
 
-        // target course should be present in DB
-        LazyList<AJEntityCourse> courses =
-            AJEntityCourse.where(AJEntityCourse.AUTHORIZER_QUERY, context.targetCourseId(), false);
-        if (courses.size() < 1) {
-            LOGGER.warn("Target course id: {} not present in DB", context.targetCourseId());
-            return new ExecutionResult<>(
-                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP018)),
-                ExecutionResult.ExecutionStatus.FAILED);
-        }
-
-        // target unit should be present in DB
-        LazyList<AJEntityUnit> units = AJEntityUnit.where(AJEntityUnit.AUTHORIZER_QUERY, context.targetUnitId(), false);
-        if (units.size() < 1) {
-            LOGGER.warn("Target unit id: {} not present in DB", context.targetUnitId());
-            return new ExecutionResult<>(
-                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP019)),
-                ExecutionResult.ExecutionStatus.FAILED);
-        }
-        this.targetCourse = courses.get(0);
-
-        return AuthorizerBuilder.buildCopyLessonAuthorizer(this.context).authorize(this.targetCourse);
+        return checkAuthorization();
     }
 
     @Override
@@ -106,7 +87,8 @@ class CopyLessonHandler implements DBHandler {
                 Base.exec(AJEntityLesson.COPY_COLLECTION, context.tenant(), context.tenantRoot(), userId, userId,
                     userId, copyLessonId, lessonId);
             if (collectionCount > 0) {
-                Base.exec(AJEntityLesson.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId, copyLessonId, lessonId);
+                Base.exec(AJEntityLesson.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
+                    copyLessonId, lessonId);
             }
             this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
             this.targetCourse.save();
@@ -123,4 +105,58 @@ class CopyLessonHandler implements DBHandler {
     public boolean handlerReadOnly() {
         return false;
     }
+
+    private ExecutionResult<MessageResponse> checkAuthorization() {
+        List<AuthorizerChainElement> chain = new LinkedList<>();
+        chain.add(
+            new AuthorizerChainElement<>(this.targetCourse, AuthorizerBuilder.buildCopyLessonAuthorizer(this.context)));
+        chain.add(new AuthorizerChainElement<>(this.sourceCourse,
+            AuthorizerBuilder.buildTenantCourseAuthorizer(this.context)));
+        return AuthorizerChainRunner.runChain(chain);
+    }
+
+    private void checkLessonExists() {
+        long lessonsCount = AJEntityLesson
+            .count(AJEntityLesson.LESSON_EXISTS_QUERY, context.courseId(), context.unitId(), context.lessonId(), false);
+        // lesson should be present in DB
+        if (lessonsCount < 1) {
+            LOGGER.warn("Lesson id: {} not present in DB", context.lessonId());
+            throw new ExecutionResultWrapperException(new ExecutionResult<>(
+                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP017)),
+                ExecutionResult.ExecutionStatus.FAILED));
+        }
+    }
+
+    private void checkTargetUnitExists() {
+        long unitsCount =
+            AJEntityUnit.count(AJEntityUnit.UNIT_EXISTS_QUERY, context.targetCourseId(), context.targetUnitId(), false);
+        if (unitsCount < 1) {
+            LOGGER.warn("Target unit id: {} not present in DB", context.targetUnitId());
+            throw new ExecutionResultWrapperException(new ExecutionResult<>(
+                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP019)),
+                ExecutionResult.ExecutionStatus.FAILED));
+        }
+    }
+
+    private void initializeSourceCourse() {
+        this.sourceCourse = AJEntityCourse.findFirst(AJEntityCourse.AUTHORIZER_QUERY, context.courseId(), false);
+        if (this.sourceCourse == null) {
+            LOGGER.warn("Source course id: {} not present in DB", context.courseId());
+            throw new ExecutionResultWrapperException(new ExecutionResult<>(
+                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP018)),
+                ExecutionResult.ExecutionStatus.FAILED));
+        }
+    }
+
+    private void initializeTargetCourse() {
+        this.targetCourse =
+            AJEntityCourse.findFirst(AJEntityCourse.AUTHORIZER_QUERY, context.targetCourseId(), false);
+        if (this.targetCourse == null) {
+            LOGGER.warn("Target course id: {} not present in DB", context.targetCourseId());
+            throw new ExecutionResultWrapperException(new ExecutionResult<>(
+                MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP018)),
+                ExecutionResult.ExecutionStatus.FAILED));
+        }
+    }
+
 }

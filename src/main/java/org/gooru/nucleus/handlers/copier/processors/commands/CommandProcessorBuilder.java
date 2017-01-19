@@ -25,7 +25,7 @@ public enum CommandProcessorBuilder {
             return () -> {
                 LOGGER.error("Invalid operation type passed in, not able to handle");
                 return MessageResponseFactory
-                    .createInvalidRequestResponse(RESOURCE_BUNDLE.getString("invalid.operation"));
+                    .createInvalidRequestResponse(RESOURCE_BUNDLE.getString("CP021"));
             };
         }
     },

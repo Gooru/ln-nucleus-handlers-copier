@@ -38,4 +38,6 @@ public class AJEntityLesson extends Model {
             + ".display_guide, ct.accessibility, ct.url, ct.sequence_id from content ct inner join collection c on c"
             + ".parent_collection_id = ct.collection_id   where c.lesson_id = ? and ct.lesson_id = ? and c.is_deleted"
             + "  = false and ct.is_deleted  = false";
+    public static final String LESSON_EXISTS_QUERY =
+        "course_id = ?::uuid and unit_Id = ?::uuid and lesson_id = ?::uuid and is_deleted = ?";
 }
