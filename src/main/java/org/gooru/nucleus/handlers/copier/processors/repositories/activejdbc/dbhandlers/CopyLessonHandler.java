@@ -93,7 +93,7 @@ class CopyLessonHandler implements DBHandler {
             this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
             this.targetCourse.save();
             return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyLessonId.toString(),
-                EventBuilderFactory.getCopyUnitEventBuilder(copyLessonId.toString())),
+                EventBuilderFactory.getCopyLessonEventBuilder(copyLessonId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);
         }
         return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
