@@ -5,6 +5,7 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.enti
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityContent;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityCourse;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityOriginalResource;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityRubric;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 
 public final class AuthorizerBuilder {
@@ -47,5 +48,9 @@ public final class AuthorizerBuilder {
 
     public static Authorizer<AJEntityCourse> buildTenantCourseAuthorizer(ProcessorContext context) {
         return new TenantCourseAuthorizer(context);
+    }
+    
+    public static Authorizer<AJEntityRubric> buildCopyRubricAuthorizer(ProcessorContext context) {
+        return new TenantRubricAuthorizer(context);
     }
 }

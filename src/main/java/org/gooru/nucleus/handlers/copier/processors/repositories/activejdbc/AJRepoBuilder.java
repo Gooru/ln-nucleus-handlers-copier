@@ -7,6 +7,7 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.CourseRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.LessonRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.QuestionRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.ResourceRepo;
+import org.gooru.nucleus.handlers.copier.processors.repositories.RubricRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.UnitRepo;
 
 public final class AJRepoBuilder {
@@ -38,8 +39,13 @@ public final class AJRepoBuilder {
     public static LessonRepo buildLessonRepo(ProcessorContext context) {
         return new AJLessonRepo(context);
     }
+    
+    public static RubricRepo buildRubricRepo(ProcessorContext context) {
+        return new AJRubricRepo(context);
+    }
 
     private AJRepoBuilder() {
         throw new AssertionError();
     }
+
 }
