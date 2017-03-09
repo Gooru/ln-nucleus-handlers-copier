@@ -13,7 +13,7 @@ public class ProcessorContext {
     private final JsonObject request;
     private final MultiMap requestHeaders;
     private final TenantContext tenantContext;
-
+    
     public ProcessorContext(String userId, JsonObject session, JsonObject request, MultiMap headers) {
         if (session == null || userId == null || session.isEmpty() || headers == null || headers.isEmpty()) {
             throw new IllegalStateException("Processor Context creation failed because of invalid values");
@@ -79,6 +79,10 @@ public class ProcessorContext {
 
     public String targetCollectionId() {
         return this.request != null ? this.request.getString(ParameterConstants.TARGET_COLLECTION_ID) : null;
+    }
+    
+    public String rubricId() {
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.RUBRIC_ID) : null;
     }
 
     public MultiMap requestHeaders() {

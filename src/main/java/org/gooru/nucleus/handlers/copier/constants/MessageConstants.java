@@ -27,6 +27,7 @@ public final class MessageConstants {
     public static final String MSG_OP_COURSE_COPY = "course.copy";
     public static final String MSG_OP_UNIT_COPY = "unit.copy";
     public static final String MSG_OP_LESSON_COPY = "lesson.copy";
+    public static final String MSG_OP_RUBRIC_COPY = "rubric.copy";
 
     // Containers for different responses
     public static final String RESP_CONTAINER_MBUS = "mb.container";
@@ -39,6 +40,7 @@ public final class MessageConstants {
     public static final String COURSE_ID = "courseId";
     public static final String UNIT_ID = "unitId";
     public static final String LESSON_ID = "lessonId";
+    public static final String RUBRIC_ID = "rubricId";
 
     private MessageConstants() {
         throw new AssertionError();

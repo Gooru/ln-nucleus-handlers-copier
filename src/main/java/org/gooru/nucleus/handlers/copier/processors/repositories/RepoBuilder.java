@@ -32,8 +32,13 @@ public final class RepoBuilder {
     public static LessonRepo buildLessonRepo(ProcessorContext context) {
         return AJRepoBuilder.buildLessonRepo(context);
     }
+    
+    public static RubricRepo buildRubricRepo(ProcessorContext context) {
+        return AJRepoBuilder.buildRubricRepo(context);
+    }
 
     private RepoBuilder() {
         throw new AssertionError();
     }
+
 }

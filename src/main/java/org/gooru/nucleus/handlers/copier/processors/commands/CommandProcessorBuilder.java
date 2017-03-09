@@ -70,6 +70,12 @@ public enum CommandProcessorBuilder {
         public Processor build(ProcessorContext context) {
             return new LessonCopyProcessor(context);
         }
+    },
+    RUBRIC_COPY(MessageConstants.MSG_OP_RUBRIC_COPY) {
+        @Override
+        public Processor build(ProcessorContext context) {
+            return new RubricCopyProcessor(context);
+        }
     };
 
     private String name;
