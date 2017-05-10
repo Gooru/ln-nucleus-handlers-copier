@@ -38,6 +38,19 @@ public class AJEntityLesson extends Model {
             + ".display_guide, ct.accessibility, ct.url, ct.sequence_id from content ct inner join collection c on c"
             + ".parent_collection_id = ct.collection_id   where c.lesson_id = ? and ct.lesson_id = ? and c.is_deleted"
             + "  = false and ct.is_deleted  = false";
+    
+    public static final String COPY_RUBRIC =
+        "INSERT INTO rubric(id, title, url, is_remote, description, categories, feedback_guidance, overall_feedback_required,"
+            + " creator_id, modifier_id, original_creator_id, original_rubric_id, parent_rubric_id, metadata, taxonomy, gut_codes,"
+            + " thumbnail, tenant, tenant_root, increment, course_id, unit_id, lesson_id, collection_id, content_id, is_rubric,"
+            + " scoring, max_score, grader) SELECT gen_random_uuid() as id, r.title, r.url, r.is_remote, r.description, r.categories,"
+            + " r.feedback_guidance, r.overall_feedback_required, ?, ?, coalesce(r.original_creator_id, r.creator_id) as"
+            + " original_creator_id, coalesce(r.original_rubric_id, r.id) as original_rubric_id, coalesce(r.parent_rubric_id, r.id) as"
+            + " parent_rubric_id, r.metadata, r.taxonomy, r.gut_codes, r.thumbnail, ?::uuid, ?::uuid, r.increment, ct.course_id,"
+            + " ct.unit_id, ct.lesson_id, ct.collection_id, ct.id, r.is_rubric, r.scoring, r.max_score, r.grader FROM rubric r inner"
+            + " join content ct on ct.parent_content_id = r.content_id WHERE ct.lesson_id = ?::uuid AND r.lesson_id = ?::uuid AND r.is_deleted"
+            + "  = false and ct.is_deleted = false";
+    
     public static final String LESSON_EXISTS_QUERY =
         "course_id = ?::uuid and unit_Id = ?::uuid and lesson_id = ?::uuid and is_deleted = ?";
 }

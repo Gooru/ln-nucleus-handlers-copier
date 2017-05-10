@@ -89,6 +89,8 @@ class CopyLessonHandler implements DBHandler {
             if (collectionCount > 0) {
                 Base.exec(AJEntityLesson.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
                     copyLessonId, lessonId);
+                Base.exec(AJEntityLesson.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
+                    copyLessonId, lessonId);
             }
             this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
             this.targetCourse.save();

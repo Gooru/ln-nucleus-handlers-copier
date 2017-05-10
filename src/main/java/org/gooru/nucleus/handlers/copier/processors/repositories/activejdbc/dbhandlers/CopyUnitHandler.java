@@ -87,6 +87,8 @@ class CopyUnitHandler implements DBHandler {
                 if (collectionCount > 0) {
                     Base.exec(AJEntityUnit.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
                         copyUnitId, unitId);
+                    Base.exec(AJEntityUnit.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
+                        copyUnitId, unitId);
                 }
             }
             this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
