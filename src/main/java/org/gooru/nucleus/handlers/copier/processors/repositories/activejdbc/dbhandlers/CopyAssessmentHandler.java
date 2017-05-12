@@ -73,6 +73,8 @@ class CopyAssessmentHandler implements DBHandler {
         }
         Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, context.tenant(), context.tenantRoot(), userId, userId,
             UUID.fromString(copyAssessmentId), assessmentId);
+        Base.exec(AJEntityCollection.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
+            copyAssessmentId, assessmentId);
 
         return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyAssessmentId,
             EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId)),

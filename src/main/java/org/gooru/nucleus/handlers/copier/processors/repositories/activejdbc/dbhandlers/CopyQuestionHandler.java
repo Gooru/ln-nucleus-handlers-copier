@@ -13,7 +13,6 @@ import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +70,11 @@ class CopyQuestionHandler implements DBHandler {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
+        
+        //Copy rubric
+        int copyRubricCount = Base.exec(AJEntityContent.COPY_RUBRIC_QUERY, questionId, userId, userId, context.tenant(),
+            context.tenantRoot(), context.questionId());
+
         return new ExecutionResult<>(MessageResponseFactory
             .createCreatedResponse(questionId, EventBuilderFactory.getCopyQuestionEventBuilder(questionId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);

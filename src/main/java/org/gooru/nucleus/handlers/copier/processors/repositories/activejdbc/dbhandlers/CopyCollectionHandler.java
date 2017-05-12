@@ -13,7 +13,6 @@ import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +75,8 @@ class CopyCollectionHandler implements DBHandler {
 
         Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, context.tenant(), context.tenantRoot(), userId, userId,
             UUID.fromString(copyCollectionId), collectionId);
+        Base.exec(AJEntityCollection.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
+            copyCollectionId, collectionId);
 
         return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCollectionId,
             EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId)),

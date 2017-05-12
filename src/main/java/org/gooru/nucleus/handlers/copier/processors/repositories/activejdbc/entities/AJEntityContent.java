@@ -48,6 +48,15 @@ public class AJEntityContent extends Model {
             + "visible_on_profile, display_guide, accessibility from content where id = ? and "
             + "content_format='question' and is_deleted=false";
 
+    public static final String COPY_RUBRIC_QUERY =
+        "INSERT INTO rubric(id, content_id, title, url, is_remote, description, categories, feedback_guidance, overall_feedback_required,"
+        + " creator_id, modifier_id, original_creator_id, original_rubric_id, parent_rubric_id, metadata, taxonomy, gut_codes,"
+        + " thumbnail, tenant, tenant_root, increment, is_rubric, scoring, max_score, grader) select gen_random_uuid() as id,"
+        + " ?::uuid, title, url, is_remote, description, categories, feedback_guidance, overall_feedback_required, ?::uuid, ?::uuid, "
+        + "coalesce(original_creator_id, creator_id) as original_creator_id, coalesce(original_rubric_id, id) as original_rubric_id,"
+        + " coalesce(parent_rubric_id, id) as parent_rubric_id, metadata, taxonomy, gut_codes, thumbnail, ?::uuid, ?::uuid, increment,"
+        + " is_rubric, scoring, max_score, grader FROM rubric where content_id = ?::uuid and is_deleted = false";
+    
     public static final String PUBLISHED_FILTER = "id = ?::uuid and publish_status = 'published'::publish_status_type;";
 
     private static final String TENANT = "tenant";

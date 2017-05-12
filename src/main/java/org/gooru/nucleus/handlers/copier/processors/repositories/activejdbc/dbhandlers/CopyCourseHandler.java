@@ -79,6 +79,8 @@ class CopyCourseHandler implements DBHandler {
                     if (collectionCount > 0) {
                         Base.exec(AJEntityCourse.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
                             copyCourseId, courseId);
+                        Base.exec(AJEntityCourse.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
+                            copyCourseId, courseId);
                     }
                 }
             }
