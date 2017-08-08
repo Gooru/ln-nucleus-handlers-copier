@@ -7,7 +7,7 @@ import org.gooru.nucleus.handlers.copier.constants.MessageCodeConstants;
 import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilderFactory;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbauth.AuthorizerBuilder;
-import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityContent;
+import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.entities.AJEntityRubric;
 import org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.validators.FieldValidator;
 import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
@@ -16,13 +16,17 @@ import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class CopyQuestionHandler implements DBHandler {
-    private final ProcessorContext context;
-    private AJEntityContent question;
-    private final Logger LOGGER = LoggerFactory.getLogger(CopyQuestionHandler.class);
-    private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
+/**
+ * @author szgooru Created On: 07-Mar-2017
+ */
+public class CopyRubricHandler implements DBHandler {
 
-    public CopyQuestionHandler(ProcessorContext context) {
+    private final ProcessorContext context;
+    private final Logger LOGGER = LoggerFactory.getLogger(CopyRubricHandler.class);
+    private final ResourceBundle MESSAGES = ResourceBundle.getBundle("messages");
+    private AJEntityRubric rubric;
+
+    public CopyRubricHandler(ProcessorContext context) {
         this.context = context;
     }
 
@@ -33,10 +37,11 @@ class CopyQuestionHandler implements DBHandler {
             return new ExecutionResult<>(MessageResponseFactory.createForbiddenResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        if (!FieldValidator.validateId(context.questionId())) {
-            LOGGER.error("Invalid request, source question id not available. Aborting");
+
+        if (!FieldValidator.validateId(context.rubricId())) {
+            LOGGER.error("Invalid request, source rubric id not available. Aborting");
             return new ExecutionResult<>(
-                MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP001)),
+                MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP024)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
         return new ExecutionResult<>(null, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
@@ -44,39 +49,33 @@ class CopyQuestionHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> validateRequest() {
-        // Fetch the content where type is question and it is not deleted already and id is specified id
-
-        this.question = AJEntityContent
-            .findFirst(AJEntityContent.AUTHORIZER_QUERY, AJEntityContent.QUESTION, this.context.questionId(), false);
-        // Question should be present in DB
-        if (this.question == null) {
-            LOGGER.warn("Question id: {} not present in DB", context.questionId());
+        this.rubric = AJEntityRubric.findFirst(AJEntityRubric.AUTHORIZER_QUERY, this.context.rubricId());
+        if (this.rubric == null) {
+            LOGGER.warn("Rubric id: {} not present in DB", context.rubricId());
             return new ExecutionResult<>(
-                MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP012)),
+                MessageResponseFactory.createInvalidRequestResponse(MESSAGES.getString(MessageCodeConstants.CP023)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        return AuthorizerBuilder.buildCopyQuestionAuthorizer(this.context).authorize(question);
 
+        return AuthorizerBuilder.buildCopyRubricAuthorizer(context).authorize(rubric);
     }
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final String questionId = UUID.randomUUID().toString();
-        final UUID userId = UUID.fromString(context.userId());
-        final UUID parentQuestionId = UUID.fromString(context.questionId());
-        int count = Base.exec(AJEntityContent.COPY_QUESTION_QUERY, UUID.fromString(questionId), context.tenant(),
-            context.tenantRoot(), userId, userId, parentQuestionId, parentQuestionId, parentQuestionId);
+        final UUID newRubricId = UUID.randomUUID();
+
+        int count = Base.exec(AJEntityRubric.COPY_RUBRIC, newRubricId, context.userId(), context.userId(),
+            context.rubricId(), context.rubricId(), context.tenant(), context.tenantRoot(), context.rubricId());
         if (count == 0) {
+            LOGGER.error("error while copying rubric");
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        
-        //Copy rubric
-        int copyRubricCount = Base.exec(AJEntityContent.COPY_RUBRIC_QUERY, questionId, userId, userId, context.tenant(),
-            context.tenantRoot(), context.questionId());
 
-        return new ExecutionResult<>(MessageResponseFactory
-            .createCreatedResponse(questionId, EventBuilderFactory.getCopyQuestionEventBuilder(questionId)),
+        LOGGER.info("rubric is copied successfully");
+        return new ExecutionResult<>(
+            MessageResponseFactory.createCreatedResponse(newRubricId.toString(),
+                EventBuilderFactory.getCopyRubricEventBuilder(newRubricId.toString())),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 

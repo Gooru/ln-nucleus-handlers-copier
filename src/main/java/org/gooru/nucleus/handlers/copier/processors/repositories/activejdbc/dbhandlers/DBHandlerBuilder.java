@@ -10,7 +10,6 @@ public final class DBHandlerBuilder {
 
     public static DBHandler buildCopyQuestionHandler(ProcessorContext context) {
         return new CopyQuestionHandler(context);
-
     }
 
     public static DBHandler buildCopyCollectionHandler(ProcessorContext context) {
@@ -19,7 +18,6 @@ public final class DBHandlerBuilder {
 
     public static DBHandler buildCopyAssessmentHandler(ProcessorContext context) {
         return new CopyAssessmentHandler(context);
-
     }
 
     public static DBHandler buildCopyCourseHandler(ProcessorContext context) {
@@ -28,15 +26,18 @@ public final class DBHandlerBuilder {
 
     public static DBHandler buildCopyUnitHandler(ProcessorContext context) {
         return new CopyUnitHandler(context);
-
     }
 
     public static DBHandler buildCopyLessonHandler(ProcessorContext context) {
         return new CopyLessonHandler(context);
-
+    }
+    
+    public static DBHandler buildCopyRubricHandler(ProcessorContext context) {
+        return new CopyRubricHandler(context);
     }
 
     private DBHandlerBuilder() {
         throw new AssertionError();
     }
+
 }

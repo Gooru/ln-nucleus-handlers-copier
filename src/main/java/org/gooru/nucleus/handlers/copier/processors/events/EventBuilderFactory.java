@@ -11,6 +11,7 @@ public final class EventBuilderFactory {
     private static final String EVT_COURSE_COPY = "event.course.copy";
     private static final String EVT_UNIT_COPY = "event.unit.copy";
     private static final String EVT_LESSON_COPY = "event.lesson.copy";
+    private static final String EVT_RUBRIC_COPY = "event.rubric.copy";
     private static final String EVENT_NAME = "event.name";
     private static final String EVENT_BODY = "event.body";
     private static final String ID = "id";
@@ -51,5 +52,10 @@ public final class EventBuilderFactory {
     public static EventBuilder getCopyLessonEventBuilder(String lessonId) {
         return () -> new JsonObject().put(EVENT_NAME, EVT_LESSON_COPY).put(EVENT_BODY,
             new JsonObject().put(ID, lessonId));
+    }
+
+    public static EventBuilder getCopyRubricEventBuilder(String rubricId) {
+        return () -> new JsonObject().put(EVENT_NAME, EVT_RUBRIC_COPY).put(EVENT_BODY,
+            new JsonObject().put(ID, rubricId));
     }
 }
