@@ -20,4 +20,6 @@ public final class MessageCodeConstants {
     public static final String CP017 = "CP017";
     public static final String CP018 = "CP018";
     public static final String CP019 = "CP019";
+    public static final String CP023 = "CP023";
+    public static final String CP024 = "CP024";
 }

@@ -1,34 +1,36 @@
 package org.gooru.nucleus.handlers.copier.processors;
 
-import io.vertx.core.MultiMap;
-import io.vertx.core.json.JsonObject;
-
 import org.gooru.nucleus.handlers.copier.constants.MessageConstants;
 import org.gooru.nucleus.handlers.copier.constants.ParameterConstants;
 
+import io.vertx.core.MultiMap;
+import io.vertx.core.json.JsonObject;
+
 public class ProcessorContext {
 
-    final private String userId;
-    final private JsonObject prefs;
-    final private JsonObject request;
-    final private MultiMap headers;
-
-    public ProcessorContext(String userId, JsonObject prefs, JsonObject request, MultiMap headers) {
-        if (prefs == null || userId == null || prefs.isEmpty()) {
+    private final String userId;
+    private final JsonObject session;
+    private final JsonObject request;
+    private final MultiMap requestHeaders;
+    private final TenantContext tenantContext;
+    
+    public ProcessorContext(String userId, JsonObject session, JsonObject request, MultiMap headers) {
+        if (session == null || userId == null || session.isEmpty() || headers == null || headers.isEmpty()) {
             throw new IllegalStateException("Processor Context creation failed because of invalid values");
         }
         this.userId = userId;
-        this.prefs = prefs.copy();
+        this.session = session.copy();
         this.request = request != null ? request.copy() : null;
-        this.headers = headers;
+        this.requestHeaders = headers;
+        this.tenantContext = new TenantContext(session);
     }
 
     public String userId() {
         return this.userId;
     }
 
-    public JsonObject prefs() {
-        return this.prefs.copy();
+    public JsonObject session() {
+        return this.session.copy();
     }
 
     public JsonObject request() {
@@ -36,31 +38,31 @@ public class ProcessorContext {
     }
 
     public String resourceId() {
-        return this.headers != null ? this.headers.get(MessageConstants.RESOURCE_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.RESOURCE_ID) : null;
     }
 
     public String questionId() {
-        return this.headers != null ? this.headers.get(MessageConstants.QUESTION_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.QUESTION_ID) : null;
     }
 
     public String collectionId() {
-        return this.headers != null ? this.headers.get(MessageConstants.COLLECTION_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.COLLECTION_ID) : null;
     }
 
     public String assessmentId() {
-        return this.headers != null ? this.headers.get(MessageConstants.ASSESSMENT_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.ASSESSMENT_ID) : null;
     }
 
     public String courseId() {
-        return this.headers != null ? this.headers.get(MessageConstants.COURSE_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.COURSE_ID) : null;
     }
 
     public String unitId() {
-        return this.headers != null ? this.headers.get(MessageConstants.UNIT_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.UNIT_ID) : null;
     }
 
     public String lessonId() {
-        return this.headers != null ? this.headers.get(MessageConstants.LESSON_ID) : null;
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.LESSON_ID) : null;
     }
 
     public String targetCourseId() {
@@ -78,8 +80,49 @@ public class ProcessorContext {
     public String targetCollectionId() {
         return this.request != null ? this.request.getString(ParameterConstants.TARGET_COLLECTION_ID) : null;
     }
+    
+    public String rubricId() {
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.RUBRIC_ID) : null;
+    }
 
-    public MultiMap getHeaders() {
-        return headers;
+    public MultiMap requestHeaders() {
+        return requestHeaders;
+    }
+
+    public String tenant() {
+        return this.tenantContext.tenant();
+    }
+
+    public String tenantRoot() {
+        return this.tenantContext.tenantRoot();
+    }
+
+    private static class TenantContext {
+        private static final String TENANT = "tenant";
+        private static final String TENANT_ID = "tenant_id";
+        private static final String TENANT_ROOT = "tenant_root";
+
+        private final String tenantId;
+        private final String tenantRoot;
+
+        TenantContext(JsonObject session) {
+            JsonObject tenantJson = session.getJsonObject(TENANT);
+            if (tenantJson == null || tenantJson.isEmpty()) {
+                throw new IllegalStateException("Tenant Context invalid");
+            }
+            this.tenantId = tenantJson.getString(TENANT_ID);
+            if (tenantId == null || tenantId.isEmpty()) {
+                throw new IllegalStateException("Tenant Context with invalid tenant");
+            }
+            this.tenantRoot = tenantJson.getString(TENANT_ROOT);
+        }
+
+        public String tenant() {
+            return this.tenantId;
+        }
+
+        public String tenantRoot() {
+            return this.tenantRoot;
+        }
     }
 }

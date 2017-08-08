@@ -6,4 +6,6 @@ include 'api'
 include 'services:webservice'
 */
 
+include ':nucleus-libs-tenant'
+project(':nucleus-libs-tenant').projectDir = new File(settingsDir, '../nucleus-libs-tenant')
 rootProject.name = 'nucleus-copier'

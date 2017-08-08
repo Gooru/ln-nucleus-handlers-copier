@@ -13,7 +13,6 @@ import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,21 +44,18 @@ class CopyCollectionHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> validateRequest() {
-        // Fetch the content where type is collection and it is not deleted
-        // already
-        // and id is specified id
+        // Fetch the content where type is collection and it is not deleted already and id is specified id
 
-        LazyList<AJEntityCollection> collections = AJEntityCollection.where(AJEntityCollection.AUTHORIZER_QUERY,
-            AJEntityCollection.COLLECTION, this.context.collectionId(), false);
+        this.collection = AJEntityCollection
+            .findFirst(AJEntityCollection.AUTHORIZER_QUERY, AJEntityCollection.COLLECTION, this.context.collectionId(),
+                false);
         // Collection should be present in DB
-        if (collections.size() < 1) {
+        if (this.collection == null) {
             LOGGER.warn("Collection id: {} not present in DB", context.collectionId());
             return new ExecutionResult<>(
                 MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP013)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        this.collection = collections.get(0);
-
         return AuthorizerBuilder.buildCopyCollectionAuthorizer(this.context).authorize(this.collection);
 
     }
@@ -69,19 +65,21 @@ class CopyCollectionHandler implements DBHandler {
         final String copyCollectionId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(context.userId());
         final UUID collectionId = UUID.fromString(context.collectionId());
-        int count = Base.exec(AJEntityCollection.COPY_COLLECTION_QUERY, UUID.fromString(copyCollectionId), userId,
-            userId, userId, collectionId, collectionId);
+        int count =
+            Base.exec(AJEntityCollection.COPY_COLLECTION_QUERY, UUID.fromString(copyCollectionId), context.tenant(),
+                context.tenantRoot(), userId, userId, userId, collectionId, collectionId);
         if (count == 0) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
 
-        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, userId, userId, UUID.fromString(copyCollectionId),
-            collectionId);
+        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, context.tenant(), context.tenantRoot(), userId, userId,
+            UUID.fromString(copyCollectionId), collectionId);
+        Base.exec(AJEntityCollection.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
+            copyCollectionId, collectionId);
 
-        return new ExecutionResult<>(
-            MessageResponseFactory.createCreatedResponse(copyCollectionId,
-                EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId)),
+        return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCollectionId,
+            EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId)),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 

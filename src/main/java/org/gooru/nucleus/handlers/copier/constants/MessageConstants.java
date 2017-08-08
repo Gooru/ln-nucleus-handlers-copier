@@ -4,9 +4,8 @@ public final class MessageConstants {
 
     public static final String MSG_HEADER_OP = "mb.operation";
     public static final String MSG_HEADER_TOKEN = "session.token";
-    public static final String MSG_OP_AUTH_WITH_PREFS = "auth.with.prefs";
     public static final String MSG_OP_STATUS = "mb.operation.status";
-    public static final String MSG_KEY_PREFS = "prefs";
+    public static final String MSG_KEY_SESSION = "session";
     public static final String MSG_OP_STATUS_SUCCESS = "success";
     public static final String MSG_OP_STATUS_ERROR = "error";
     public static final String MSG_OP_STATUS_VALIDATION_ERROR = "error.validation";
@@ -28,6 +27,7 @@ public final class MessageConstants {
     public static final String MSG_OP_COURSE_COPY = "course.copy";
     public static final String MSG_OP_UNIT_COPY = "unit.copy";
     public static final String MSG_OP_LESSON_COPY = "lesson.copy";
+    public static final String MSG_OP_RUBRIC_COPY = "rubric.copy";
 
     // Containers for different responses
     public static final String RESP_CONTAINER_MBUS = "mb.container";
@@ -40,6 +40,7 @@ public final class MessageConstants {
     public static final String COURSE_ID = "courseId";
     public static final String UNIT_ID = "unitId";
     public static final String LESSON_ID = "lessonId";
+    public static final String RUBRIC_ID = "rubricId";
 
     private MessageConstants() {
         throw new AssertionError();
