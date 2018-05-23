@@ -9,38 +9,42 @@ public class AJEntityCourse extends Model {
     public static final String COPY_COURSE =
         "insert into course(id, tenant, tenant_root, title, description, owner_id, creator_id, modifier_id, "
             + "original_creator_id, original_course_id, parent_course_id, thumbnail, metadata, taxonomy, "
-            + "collaborator, sequence_id, subject_bucket, use_case, version) select ?, ?::uuid, ?::uuid, title, description, ?, ?, ?, "
-            + "coalesce(original_creator_id, creator_id) as original_creator_id, coalesce(original_course_id, ?) as "
+            + "collaborator, sequence_id, subject_bucket, use_case, version, aggregated_taxonomy, gut_codes, "
+            + "aggregated_gut_codes, license) select ?, ?::uuid, ?::uuid, title, description, ?, ?, ?, coalesce"
+            + "(original_creator_id, creator_id) as original_creator_id, coalesce(original_course_id, ?) as "
             + "original_course_id, ?, thumbnail, metadata, taxonomy, collaborator, (select (coalesce(max(co"
             + ".sequence_id), 0) + 1) as sequence_id from course co where (co.collaborator  @> ?::jsonb or co"
             + ".owner_id = ?) and CASE WHEN c.subject_bucket is null THEN co.subject_bucket is null ELSE co"
-            + ".subject_bucket = c.subject_bucket END) as sequence_id, subject_bucket, use_case, version from course c where "
-            + "id = ? and is_deleted = false";
+            + ".subject_bucket = c.subject_bucket END) as sequence_id, subject_bucket, use_case, version, "
+            + "aggregated_taxonomy, gut_codes, aggregated_gut_codes, license from course c where id = ? and "
+            + "is_deleted = false";
     public static final String COPY_UNIT =
         "insert into unit(course_id, unit_id, tenant, tenant_root, title, owner_id, creator_id, modifier_id, "
             + "original_creator_id, original_unit_id, parent_unit_id, big_ideas, essential_questions, metadata, "
-            + "taxonomy, sequence_id) select ?, gen_random_uuid(), ?::uuid, ?::uuid, title, ?, ?, ?, coalesce"
-            + "(original_creator_id, creator_id) as original_creator_id, coalesce(original_unit_id, unit_id) as "
-            + "original_unit_id, unit_id, big_ideas, essential_questions, metadata, taxonomy, sequence_id from unit "
-            + "where course_id = ? and is_deleted = false";
+            + "taxonomy, sequence_id, aggregated_taxonomy, gut_codes, aggregated_gut_codes) select ?, gen_random_uuid"
+            + "(), ?::uuid, ?::uuid, title, ?, ?, ?, coalesce(original_creator_id, creator_id) as "
+            + "original_creator_id, coalesce(original_unit_id, unit_id) as original_unit_id, unit_id, big_ideas, "
+            + "essential_questions, metadata, taxonomy, sequence_id, aggregated_taxonomy, gut_codes, "
+            + "aggregated_gut_codes from unit where course_id = ? and is_deleted = false";
     public static final String COPY_LESSON =
         "insert into lesson(course_id, unit_id, lesson_id, tenant, tenant_root, title, owner_id, creator_id, "
             + "modifier_id, original_creator_id, original_lesson_id, parent_lesson_id, metadata, taxonomy, "
-            + "sequence_id) select u.course_id, u.unit_id, gen_random_uuid(), ?::uuid, ?::uuid, l.title, ?, ?, ?, coalesce(l"
-            + ".original_creator_id, l.creator_id) as original_creator_id, coalesce(l.original_lesson_id, l"
-            + ".lesson_id) as original_lesson_id, l.lesson_id, l.metadata, l.taxonomy, l.sequence_id from lesson l "
-            + "inner join unit u  on u.parent_unit_id = l.unit_id   where u.course_id = ? and l.course_id = ? and l"
-            + ".is_deleted = false";
+            + "sequence_id, aggregated_taxonomy, gut_codes, aggregated_gut_codes) select u.course_id, u.unit_id, "
+            + "gen_random_uuid(), ?::uuid, ?::uuid, l.title, ?, ?, ?, coalesce(l.original_creator_id, l.creator_id) "
+            + "as original_creator_id, coalesce(l.original_lesson_id, l.lesson_id) as original_lesson_id, l"
+            + ".lesson_id, l.metadata, l.taxonomy, l.sequence_id, l.aggregated_taxonomy, l.gut_codes, "
+            + "l.aggregated_gut_codes from lesson l inner join unit u  on u.parent_unit_id = l.unit_id   where u"
+            + ".course_id = ? and l.course_id = ? and l.is_deleted = false";
     public static final String COPY_COLLECTION =
         "insert into collection(id, course_id, unit_id, lesson_id, tenant, tenant_root, title, owner_id, creator_id, "
             + "modifier_id, original_creator_id, original_collection_id, parent_collection_id, sequence_id, format, "
-            + "thumbnail, learning_objective, metadata, taxonomy, login_required,setting,grading, url) select "
-            + "gen_random_uuid(), l.course_id, l.unit_id, l.lesson_id, ?::uuid, ?::uuid, c.title, ?, ?, ?, coalesce(c"
-            + ".original_creator_id, c.creator_id) as original_creator_id, coalesce(c.original_collection_id, c.id) "
-            + "as original_collection_id, c.id, c.sequence_id, c.format, c.thumbnail, c.learning_objective, c"
-            + ".metadata, c.taxonomy, c.login_required,c.setting,c.grading, c.url from collection c inner join lesson"
-            + " l on l.parent_lesson_id = c.lesson_id   where l.course_id = ? and c.course_id = ? and c.is_deleted  ="
-            + " false";
+            + "thumbnail, learning_objective, metadata, taxonomy, login_required,setting,grading, url, license, "
+            + "gut_codes) select gen_random_uuid(), l.course_id, l.unit_id, l.lesson_id, ?::uuid, ?::uuid, c.title, "
+            + "?, ?, ?, coalesce(c.original_creator_id, c.creator_id) as original_creator_id, coalesce(c"
+            + ".original_collection_id, c.id) as original_collection_id, c.id, c.sequence_id, c.format, c.thumbnail, "
+            + "c.learning_objective, c.metadata, c.taxonomy, c.login_required,c.setting,c.grading, c.url, c.license, "
+            + "c.gut_codes from collection c inner join lesson l on l.parent_lesson_id = c.lesson_id   where l"
+            + ".course_id = ? and c.course_id = ? and c.is_deleted  = false";
     public static final String COPY_CONTENT =
         "insert into content(id, course_id, unit_id, lesson_id, collection_id, tenant, tenant_root, title, "
             + "creator_id, modifier_id, original_creator_id, original_content_id, parent_content_id, narration, "
