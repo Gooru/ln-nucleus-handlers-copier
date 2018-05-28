@@ -12,8 +12,8 @@ public class AJEntityLesson extends Model {
             + "sequence_id, aggregated_taxonomy, gut_codes, aggregated_gut_codes) select ?, ?, ?, ?::uuid, ?::uuid, l"
             + ".title, ?, ?, ?, coalesce(l.original_creator_id, l.creator_id) as original_creator_id, coalesce(l"
             + ".original_lesson_id, l.lesson_id) as original_lesson_id, l.lesson_id, l.metadata, l.taxonomy, (select "
-            + "(coalesce(max(sequence_id), 0) + 1), l.aggregated_taxonomy, l.gut_codes, l.aggregated_gut_codes from "
-            + "lesson where course_id = ? and unit_id = ?) as sequence_id from lesson l where l.lesson_id = ?  and l"
+            + "(coalesce(max(sequence_id), 0) + 1) from lesson where course_id = ? and unit_id = ?) as sequence_id, l"
+            + ".aggregated_taxonomy, l.gut_codes, l.aggregated_gut_codes from lesson l where l.lesson_id = ?  and l"
             + ".is_deleted = false";
     public static final String COPY_COLLECTION =
         "insert into collection(id, course_id, unit_id, lesson_id, tenant, tenant_root, title, owner_id, creator_id, "
@@ -41,15 +41,24 @@ public class AJEntityLesson extends Model {
             + "  = false and ct.is_deleted  = false";
 
     public static final String COPY_RUBRIC =
-        "INSERT INTO rubric(id, title, url, is_remote, description, categories, feedback_guidance, overall_feedback_required,"
-            + " creator_id, modifier_id, original_creator_id, original_rubric_id, parent_rubric_id, metadata, taxonomy, gut_codes,"
-            + " thumbnail, tenant, tenant_root, increment, course_id, unit_id, lesson_id, collection_id, content_id, is_rubric,"
-            + " scoring, max_score, grader) SELECT gen_random_uuid() as id, r.title, r.url, r.is_remote, r.description, r.categories,"
-            + " r.feedback_guidance, r.overall_feedback_required, ?, ?, coalesce(r.original_creator_id, r.creator_id) as"
-            + " original_creator_id, coalesce(r.original_rubric_id, r.id) as original_rubric_id, coalesce(r.parent_rubric_id, r.id) as"
-            + " parent_rubric_id, r.metadata, r.taxonomy, r.gut_codes, r.thumbnail, ?::uuid, ?::uuid, r.increment, ct.course_id,"
-            + " ct.unit_id, ct.lesson_id, ct.collection_id, ct.id, r.is_rubric, r.scoring, r.max_score, r.grader FROM rubric r inner"
-            + " join content ct on ct.parent_content_id = r.content_id WHERE ct.lesson_id = ?::uuid AND r.lesson_id = ?::uuid AND r.is_deleted"
+        "INSERT INTO rubric(id, title, url, is_remote, description, categories, feedback_guidance, "
+            + "overall_feedback_required,"
+            + " creator_id, modifier_id, original_creator_id, original_rubric_id, parent_rubric_id, metadata, "
+            + "taxonomy, gut_codes,"
+            + " thumbnail, tenant, tenant_root, increment, course_id, unit_id, lesson_id, collection_id, content_id, "
+            + "is_rubric,"
+            + " scoring, max_score, grader) SELECT gen_random_uuid() as id, r.title, r.url, r.is_remote, r"
+            + ".description, r.categories,"
+            + " r.feedback_guidance, r.overall_feedback_required, ?, ?, coalesce(r.original_creator_id, r.creator_id)"
+            + " as"
+            + " original_creator_id, coalesce(r.original_rubric_id, r.id) as original_rubric_id, coalesce(r"
+            + ".parent_rubric_id, r.id) as"
+            + " parent_rubric_id, r.metadata, r.taxonomy, r.gut_codes, r.thumbnail, ?::uuid, ?::uuid, r.increment, ct"
+            + ".course_id,"
+            + " ct.unit_id, ct.lesson_id, ct.collection_id, ct.id, r.is_rubric, r.scoring, r.max_score, r.grader FROM"
+            + " rubric r inner"
+            + " join content ct on ct.parent_content_id = r.content_id WHERE ct.lesson_id = ?::uuid AND r.lesson_id ="
+            + " ?::uuid AND r.is_deleted"
             + "  = false and ct.is_deleted = false";
 
     public static final String LESSON_EXISTS_QUERY =
