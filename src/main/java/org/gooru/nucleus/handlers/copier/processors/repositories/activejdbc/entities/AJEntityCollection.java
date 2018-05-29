@@ -18,21 +18,21 @@ public class AJEntityCollection extends Model {
 
     public static final String COPY_COLLECTION_QUERY =
         "insert into collection(id, tenant, tenant_root, title, owner_id, creator_id, modifier_id, "
-            + "original_creator_id, "
-            + "original_collection_id, parent_collection_id , format, thumbnail, learning_objective, metadata, "
-            + "taxonomy, url, login_required, setting, grading) select ?, ?::uuid, ?::uuid, title, ?, ?, ?, coalesce"
-            + "(original_creator_id, creator_id) as original_creator_id, "
-            + "coalesce(original_collection_id, id) as original_collection_id , ?, format, thumbnail, learning_objective,"
-            + " metadata, taxonomy, url, login_required, setting, grading from collection where id = ? and "
-            + "format='collection' and is_deleted = false";
+            + "original_creator_id, original_collection_id, parent_collection_id , format, thumbnail, "
+            + "learning_objective, metadata, taxonomy, url, login_required, setting, grading, license, gut_codes) "
+            + "select ?, ?::uuid, ?::uuid, title, ?, ?, ?, coalesce(original_creator_id, creator_id) as "
+            + "original_creator_id, coalesce(original_collection_id, id) as original_collection_id , ?, format, "
+            + "thumbnail, learning_objective, metadata, taxonomy, url, login_required, setting, grading, license, "
+            + "gut_codes from collection where id = ? and format='collection' and is_deleted = false";
 
     public static final String COPY_ASSESSMENT_QUERY =
-        "insert into collection(id, tenant, tenant_root, title, owner_id, creator_id, modifier_id, original_creator_id, "
-            + "original_collection_id, parent_collection_id, format, thumbnail, learning_objective, metadata, "
-            + "taxonomy, url, login_required, setting, grading) select ?, ?::uuid, ?::uuid, title, ?, ?, ?, coalesce(original_creator_id, creator_id) as original_creator_id, "
-            + "coalesce(original_collection_id, id) as original_collection_id , ? , format, thumbnail, "
-            + "learning_objective, metadata, taxonomy, url, login_required, setting, grading from collection where id"
-            + " = ? and format='assessment' and is_deleted = false";
+        "insert into collection(id, tenant, tenant_root, title, owner_id, creator_id, modifier_id, "
+            + "original_creator_id, original_collection_id, parent_collection_id, format, thumbnail, "
+            + "learning_objective, metadata, taxonomy, url, login_required, setting, grading, license, gut_codes) "
+            + "select ?, ?::uuid, ?::uuid, title, ?, ?, ?, coalesce(original_creator_id, creator_id) as "
+            + "original_creator_id, coalesce(original_collection_id, id) as original_collection_id , ? , format, "
+            + "thumbnail, learning_objective, metadata, taxonomy, url, login_required, setting, grading, license, "
+            + "gut_codes from collection where id = ? and format='assessment' and is_deleted = false";
 
     public static final String COPY_COLLECTION_ITEM_QUERY =
         "insert into content(id, tenant, tenant_root, title, url, creator_id, modifier_id, original_creator_id, original_content_id, "
@@ -45,7 +45,7 @@ public class AJEntityCollection extends Model {
             + "content_format, content_subformat, answer,  metadata,taxonomy, hint_explanation_detail, thumbnail, ?, "
             + "is_copyright_owner , copyright_owner, info, visible_on_profile, display_guide, accessibility, sequence_id from "
             + "content where collection_id = ? and is_deleted = false";
-    
+
     public static final String COPY_RUBRIC =
         "INSERT INTO rubric(id, title, url, is_remote, description, categories, feedback_guidance, overall_feedback_required,"
             + " creator_id, modifier_id, original_creator_id, original_rubric_id, parent_rubric_id, metadata, taxonomy, gut_codes,"
