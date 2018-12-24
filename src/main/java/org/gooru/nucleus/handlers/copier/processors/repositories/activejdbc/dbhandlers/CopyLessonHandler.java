@@ -1,6 +1,10 @@
 package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbhandlers;
 
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.UUID;
 
 import org.gooru.nucleus.handlers.copier.constants.MessageCodeConstants;
 import org.gooru.nucleus.handlers.copier.constants.ParameterConstants;
@@ -18,7 +22,6 @@ import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
