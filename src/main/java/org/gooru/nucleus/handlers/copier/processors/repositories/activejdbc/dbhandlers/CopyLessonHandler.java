@@ -1,13 +1,10 @@
 package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbhandlers;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-
 import org.gooru.nucleus.handlers.copier.constants.MessageCodeConstants;
-import org.gooru.nucleus.handlers.copier.constants.ParameterConstants;
 import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilderFactory;
 import org.gooru.nucleus.handlers.copier.processors.exceptions.ExecutionResultWrapperException;
@@ -78,25 +75,12 @@ class CopyLessonHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final UUID copyLessonId = UUID.randomUUID();
         final UUID userId = UUID.fromString(context.userId());
         final UUID lessonId = UUID.fromString(context.lessonId());
         final UUID targetCourseId = UUID.fromString(context.targetCourseId());
         final UUID targetUnitId = UUID.fromString(context.targetUnitId());
-        int count = Base.exec(AJEntityLesson.COPY_LESSON, targetCourseId, targetUnitId, copyLessonId, context.tenant(),
-            context.tenantRoot(), userId, userId, userId, targetCourseId, targetUnitId, lessonId);
-        if (count > 0) {
-            int collectionCount =
-                Base.exec(AJEntityLesson.COPY_COLLECTION, context.tenant(), context.tenantRoot(), userId, userId,
-                    userId, copyLessonId, lessonId);
-            if (collectionCount > 0) {
-                Base.exec(AJEntityLesson.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
-                    copyLessonId, lessonId);
-                Base.exec(AJEntityLesson.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
-                    copyLessonId, lessonId);
-            }
-            this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
-            this.targetCourse.save();
+        Object copyLessonId = Base.firstCell(AJEntityLesson.COPY_LESSON, targetCourseId, targetUnitId, lessonId, userId);
+        if (copyLessonId != null) {
             return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyLessonId.toString(),
                 EventBuilderFactory.getCopyLessonEventBuilder(copyLessonId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);

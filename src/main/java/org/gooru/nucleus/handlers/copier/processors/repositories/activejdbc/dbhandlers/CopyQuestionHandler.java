@@ -61,22 +61,16 @@ class CopyQuestionHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final String questionId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(context.userId());
-        final UUID parentQuestionId = UUID.fromString(context.questionId());
-        int count = Base.exec(AJEntityContent.COPY_QUESTION_QUERY, UUID.fromString(questionId), context.tenant(),
-            context.tenantRoot(), userId, userId, parentQuestionId, parentQuestionId, parentQuestionId);
-        if (count == 0) {
+        final UUID questionId = UUID.fromString(context.questionId());
+        Object newQuestionId = Base.firstCell(AJEntityContent.COPY_REFERENCE_QUESTION_QUERY, questionId, userId);
+        if (newQuestionId == null) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        
-        //Copy rubric
-        int copyRubricCount = Base.exec(AJEntityContent.COPY_RUBRIC_QUERY, questionId, userId, userId, context.tenant(),
-            context.tenantRoot(), context.questionId());
-
+    
         return new ExecutionResult<>(MessageResponseFactory
-            .createCreatedResponse(questionId, EventBuilderFactory.getCopyQuestionEventBuilder(questionId)),
+            .createCreatedResponse(newQuestionId.toString(), EventBuilderFactory.getCopyQuestionEventBuilder(newQuestionId.toString())),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 
