@@ -41,9 +41,9 @@ public final class EventBuilderFactory {
             new JsonObject().put(ID, assessmentId));
     }
     
-    public static EventBuilder getCopyOfflineActivityEventBuilder(String assessmentId) {
+    public static EventBuilder getCopyOfflineActivityEventBuilder(String offlineActivityId) {
       return () -> new JsonObject().put(EVENT_NAME, EVT_OFFLINE_ACTIVITY_COPY).put(EVENT_BODY,
-          new JsonObject().put(ID, assessmentId));
+          new JsonObject().put(ID, offlineActivityId));
   }
 
     public static EventBuilder getCopyCourseEventBuilder(String courseId) {
