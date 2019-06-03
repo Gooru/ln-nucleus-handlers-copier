@@ -73,8 +73,10 @@ class CopyUnitHandler implements DBHandler {
         final UUID userId = UUID.fromString(context.userId());
         final UUID unitId = UUID.fromString(context.unitId());
         final UUID targetCourseId = UUID.fromString(context.targetCourseId());
+        LOGGER.info("Start Time:: ", System.currentTimeMillis());
         Object copyUnitId = Base.firstCell(AJEntityUnit.COPY_UNIT, targetCourseId, unitId, userId);
         if (copyUnitId != null) {
+          LOGGER.info("End Time:: ", System.currentTimeMillis());
             return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyUnitId.toString(),
                 EventBuilderFactory.getCopyUnitEventBuilder(copyUnitId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);
