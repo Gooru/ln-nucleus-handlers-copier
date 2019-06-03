@@ -79,10 +79,8 @@ class CopyLessonHandler implements DBHandler {
         final UUID lessonId = UUID.fromString(context.lessonId());
         final UUID targetCourseId = UUID.fromString(context.targetCourseId());
         final UUID targetUnitId = UUID.fromString(context.targetUnitId());
-        LOGGER.info("Start Time:: ", System.currentTimeMillis());
         Object copyLessonId = Base.firstCell(AJEntityLesson.COPY_LESSON, targetCourseId, targetUnitId, lessonId, userId);
         if (copyLessonId != null) {
-          LOGGER.info("End Time:: ", System.currentTimeMillis());
             return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyLessonId.toString(),
                 EventBuilderFactory.getCopyLessonEventBuilder(copyLessonId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);
