@@ -61,24 +61,18 @@ class CopyAssessmentHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final String copyAssessmentId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(context.userId());
         final UUID assessmentId = UUID.fromString(context.assessmentId());
-        int count =
-            Base.exec(AJEntityCollection.COPY_ASSESSMENT_QUERY, UUID.fromString(copyAssessmentId), context.tenant(),
-                context.tenantRoot(), userId, userId, userId, assessmentId, assessmentId);
-        if (count == 0) {
-            return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
-                ExecutionResult.ExecutionStatus.FAILED);
+        Object copyAssessmentId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, assessmentId, AJEntityCollection.ASSESSEMENT, userId);
+        if (copyAssessmentId != null) {
+          return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyAssessmentId.toString(),
+              EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId.toString())),
+              ExecutionResult.ExecutionStatus.SUCCESSFUL);
         }
-        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, context.tenant(), context.tenantRoot(), userId, userId,
-            UUID.fromString(copyAssessmentId), assessmentId);
-        Base.exec(AJEntityCollection.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
-            copyAssessmentId, assessmentId);
 
-        return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyAssessmentId,
-            EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId)),
-            ExecutionResult.ExecutionStatus.SUCCESSFUL);
+        return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
+            ExecutionResult.ExecutionStatus.FAILED);
+        
     }
 
     @Override

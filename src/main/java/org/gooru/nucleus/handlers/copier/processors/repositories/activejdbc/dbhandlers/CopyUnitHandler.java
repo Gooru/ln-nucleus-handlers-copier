@@ -1,9 +1,10 @@
 package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbhandlers;
 
-import java.util.*;
-
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.UUID;
 import org.gooru.nucleus.handlers.copier.constants.MessageCodeConstants;
-import org.gooru.nucleus.handlers.copier.constants.ParameterConstants;
 import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilderFactory;
 import org.gooru.nucleus.handlers.copier.processors.exceptions.ExecutionResultWrapperException;
@@ -69,30 +70,12 @@ class CopyUnitHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final UUID copyUnitId = UUID.randomUUID();
         final UUID userId = UUID.fromString(context.userId());
+        final UUID courseId = UUID.fromString(context.courseId());
         final UUID unitId = UUID.fromString(context.unitId());
         final UUID targetCourseId = UUID.fromString(context.targetCourseId());
-        int count =
-            Base.exec(AJEntityUnit.COPY_UNIT, targetCourseId, copyUnitId, context.tenant(), context.tenantRoot(),
-                userId, userId, userId, targetCourseId, unitId);
-        if (count > 0) {
-            int lessonCount =
-                Base.exec(AJEntityUnit.COPY_LESSON, context.tenant(), context.tenantRoot(), userId, userId, userId,
-                    copyUnitId, unitId);
-            if (lessonCount > 0) {
-                int collectionCount =
-                    Base.exec(AJEntityUnit.COPY_COLLECTION, context.tenant(), context.tenantRoot(), userId, userId,
-                        userId, copyUnitId, unitId);
-                if (collectionCount > 0) {
-                    Base.exec(AJEntityUnit.COPY_CONTENT, context.tenant(), context.tenantRoot(), userId, userId,
-                        copyUnitId, unitId);
-                    Base.exec(AJEntityUnit.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
-                        copyUnitId, unitId);
-                }
-            }
-            this.targetCourse.set(ParameterConstants.UPDATED_AT, new Date(System.currentTimeMillis()));
-            this.targetCourse.save();
+        Object copyUnitId = Base.firstCell(AJEntityUnit.COPY_UNIT, courseId, unitId, targetCourseId, userId);
+        if (copyUnitId != null) {
             return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyUnitId.toString(),
                 EventBuilderFactory.getCopyUnitEventBuilder(copyUnitId.toString())),
                 ExecutionResult.ExecutionStatus.SUCCESSFUL);

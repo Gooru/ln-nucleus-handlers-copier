@@ -62,25 +62,19 @@ class CopyCollectionHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final String copyCollectionId = UUID.randomUUID().toString();
         final UUID userId = UUID.fromString(context.userId());
         final UUID collectionId = UUID.fromString(context.collectionId());
-        int count =
-            Base.exec(AJEntityCollection.COPY_COLLECTION_QUERY, UUID.fromString(copyCollectionId), context.tenant(),
-                context.tenantRoot(), userId, userId, userId, collectionId, collectionId);
-        if (count == 0) {
-            return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
-                ExecutionResult.ExecutionStatus.FAILED);
+        Object copyCollectionId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, collectionId, AJEntityCollection.COLLECTION, userId);
+        if (copyCollectionId != null) {
+          return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCollectionId.toString(),
+              EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId.toString())),
+              ExecutionResult.ExecutionStatus.SUCCESSFUL);
         }
 
-        Base.exec(AJEntityCollection.COPY_COLLECTION_ITEM_QUERY, context.tenant(), context.tenantRoot(), userId, userId,
-            UUID.fromString(copyCollectionId), collectionId);
-        Base.exec(AJEntityCollection.COPY_RUBRIC, userId, userId, context.tenant(), context.tenantRoot(),
-            copyCollectionId, collectionId);
-
-        return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCollectionId,
-            EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId)),
-            ExecutionResult.ExecutionStatus.SUCCESSFUL);
+        return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
+            ExecutionResult.ExecutionStatus.FAILED);
+        
+        
     }
 
     @Override

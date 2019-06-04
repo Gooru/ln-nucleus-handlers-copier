@@ -1,7 +1,6 @@
 package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbhandlers;
 
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 import org.gooru.nucleus.handlers.copier.constants.MessageCodeConstants;
 import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
@@ -62,21 +61,20 @@ public class CopyRubricHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final UUID newRubricId = UUID.randomUUID();
 
-        int count = Base.exec(AJEntityRubric.COPY_RUBRIC, newRubricId, context.userId(), context.userId(),
-            context.rubricId(), context.rubricId(), context.tenant(), context.tenantRoot(), context.rubricId());
-        if (count == 0) {
-            LOGGER.error("error while copying rubric");
-            return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
-                ExecutionResult.ExecutionStatus.FAILED);
+        Object newRubricId = Base.firstCell(AJEntityRubric.COPY_RUBRIC, context.rubricId(), context.userId());
+        if (newRubricId != null) {
+          LOGGER.info("rubric is copied successfully");
+          return new ExecutionResult<>(
+              MessageResponseFactory.createCreatedResponse(newRubricId.toString(),
+                  EventBuilderFactory.getCopyRubricEventBuilder(newRubricId.toString())),
+              ExecutionResult.ExecutionStatus.SUCCESSFUL);
         }
+        LOGGER.error("error while copying rubric");
+        return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
+            ExecutionResult.ExecutionStatus.FAILED);
 
-        LOGGER.info("rubric is copied successfully");
-        return new ExecutionResult<>(
-            MessageResponseFactory.createCreatedResponse(newRubricId.toString(),
-                EventBuilderFactory.getCopyRubricEventBuilder(newRubricId.toString())),
-            ExecutionResult.ExecutionStatus.SUCCESSFUL);
+        
     }
 
     @Override

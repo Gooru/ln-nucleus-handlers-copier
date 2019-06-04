@@ -5,6 +5,7 @@ import org.gooru.nucleus.handlers.copier.processors.repositories.AssessmentRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.CollectionRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.CourseRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.LessonRepo;
+import org.gooru.nucleus.handlers.copier.processors.repositories.OfflineActivityRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.QuestionRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.ResourceRepo;
 import org.gooru.nucleus.handlers.copier.processors.repositories.RubricRepo;
@@ -42,6 +43,10 @@ public final class AJRepoBuilder {
     
     public static RubricRepo buildRubricRepo(ProcessorContext context) {
         return new AJRubricRepo(context);
+    }
+    
+    public static OfflineActivityRepo buildOfflineActivityRepo(ProcessorContext context) {
+      return new AJOfflineActivityRepo(context);
     }
 
     private AJRepoBuilder() {

@@ -2,7 +2,6 @@ package org.gooru.nucleus.handlers.copier.processors.repositories.activejdbc.dbh
 
 import java.util.ResourceBundle;
 import java.util.UUID;
-
 import org.gooru.nucleus.handlers.copier.constants.MessageCodeConstants;
 import org.gooru.nucleus.handlers.copier.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.copier.processors.events.EventBuilderFactory;
@@ -14,7 +13,6 @@ import org.gooru.nucleus.handlers.copier.processors.responses.ExecutionResult;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponse;
 import org.gooru.nucleus.handlers.copier.processors.responses.MessageResponseFactory;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,31 +71,23 @@ class CopyResourceHandler implements DBHandler {
 
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
-        final String newResourceId = UUID.randomUUID().toString();
+
         final UUID userId = UUID.fromString(this.context.userId());
         final UUID resourceId = UUID.fromString(this.context.resourceId());
         String title = this.context.request().getString("title");
-        int count = 0;
+        Object newResourceId;
 
         if (this.sourceOriginalResource != null) {
-            count = Base.exec(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, UUID.fromString(newResourceId),
-                context.tenant(), context.tenantRoot(), userId, userId, resourceId, resourceId, resourceId);
+          newResourceId = Base.firstCell(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, resourceId, userId);
         } else {
-            final UUID originalContentId =
-                UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID));
-            final UUID originalCreatorId =
-                UUID.fromString(this.sourceContent.getString(AJEntityContent.ORIGINAL_CREATOR_ID));
-            title = title != null && !title.isEmpty() ? title : this.sourceContent.getString(AJEntityContent.TITLE);
-            count = Base.exec(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, UUID.fromString(newResourceId),
-                context.tenant(), context.tenantRoot(), title, userId, userId, originalCreatorId, originalContentId,
-                resourceId, resourceId);
+          newResourceId = Base.firstCell(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, resourceId, userId, title);
         }
-        if (count == 0) {
+        if (newResourceId == null) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
         return new ExecutionResult<>(MessageResponseFactory
-            .createCreatedResponse(newResourceId, EventBuilderFactory.getCopyResourceEventBuilder(newResourceId)),
+            .createCreatedResponse(newResourceId.toString(), EventBuilderFactory.getCopyResourceEventBuilder(newResourceId.toString())),
             ExecutionResult.ExecutionStatus.SUCCESSFUL);
     }
 

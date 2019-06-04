@@ -76,7 +76,13 @@ public enum CommandProcessorBuilder {
         public Processor build(ProcessorContext context) {
             return new RubricCopyProcessor(context);
         }
-    };
+    },
+    OFFLINE_ACTIVITY_COPY(MessageConstants.MSG_OP_OA_COPY) {
+      @Override
+      public Processor build(ProcessorContext context) {
+          return new OfflineActivityCopyProcessor(context);
+      }
+  };
 
     private String name;
 
