@@ -76,10 +76,12 @@ class CopyLessonHandler implements DBHandler {
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
         final UUID userId = UUID.fromString(context.userId());
+        final UUID courseId = UUID.fromString(context.courseId());
+        final UUID unitId = UUID.fromString(context.unitId());
         final UUID lessonId = UUID.fromString(context.lessonId());
         final UUID targetCourseId = UUID.fromString(context.targetCourseId());
         final UUID targetUnitId = UUID.fromString(context.targetUnitId());
-        Object copyLessonId = Base.firstCell(AJEntityLesson.COPY_LESSON, targetCourseId, targetUnitId, lessonId, userId);
+        Object copyLessonId = Base.firstCell(AJEntityLesson.COPY_LESSON, courseId, unitId, lessonId, targetCourseId, targetUnitId, userId);
         if (copyLessonId != null) {
             return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyLessonId.toString(),
                 EventBuilderFactory.getCopyLessonEventBuilder(copyLessonId.toString())),
