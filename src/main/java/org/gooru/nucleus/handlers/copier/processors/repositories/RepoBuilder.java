@@ -36,6 +36,10 @@ public final class RepoBuilder {
     public static RubricRepo buildRubricRepo(ProcessorContext context) {
         return AJRepoBuilder.buildRubricRepo(context);
     }
+    
+    public static OfflineActivityRepo buildOfflineActivityRepo(ProcessorContext context) {
+      return AJRepoBuilder.buildOfflineActivityRepo(context);
+  }
 
     private RepoBuilder() {
         throw new AssertionError();

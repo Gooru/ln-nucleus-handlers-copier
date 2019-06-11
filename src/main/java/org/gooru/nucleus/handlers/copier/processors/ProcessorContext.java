@@ -84,6 +84,10 @@ public class ProcessorContext {
     public String rubricId() {
         return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.RUBRIC_ID) : null;
     }
+    
+    public String offlineActivityId() {
+        return this.requestHeaders != null ? this.requestHeaders.get(MessageConstants.OFFLINE_ACTIVITY_ID) : null;
+    }
 
     public MultiMap requestHeaders() {
         return requestHeaders;

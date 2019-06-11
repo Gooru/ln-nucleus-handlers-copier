@@ -35,6 +35,10 @@ public final class DBHandlerBuilder {
     public static DBHandler buildCopyRubricHandler(ProcessorContext context) {
         return new CopyRubricHandler(context);
     }
+    
+    public static DBHandler buildCopyOfflineActivityHandler(ProcessorContext context) {
+      return new CopyOfflineActivityHandler(context);
+  }
 
     private DBHandlerBuilder() {
         throw new AssertionError();

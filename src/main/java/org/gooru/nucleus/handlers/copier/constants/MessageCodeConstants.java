@@ -22,4 +22,7 @@ public final class MessageCodeConstants {
     public static final String CP019 = "CP019";
     public static final String CP023 = "CP023";
     public static final String CP024 = "CP024";
+    public static final String CP025 = "CP025";
+    public static final String CP026 = "CP026";
+    
 }
