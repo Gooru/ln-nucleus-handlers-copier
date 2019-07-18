@@ -17,11 +17,11 @@ public class AJEntityContent extends Model {
     public static final String AUTHORIZER_QUERY =
         "content_format = ?::content_format_type and id = ?::uuid and is_deleted = ?";
 
-    public static final String COPY_ORIGINAL_RESOURCE_QUERY = "SELECT copy_original_resource(?::uuid, ?::uuid)";
+    public static final String COPY_ORIGINAL_RESOURCE_QUERY = "SELECT copy_original_resource(?::uuid, ?::uuid, ?::uuid, ?::uuid)";
 
-    public static final String COPY_REFERENCE_RESOURCE_QUERY = "SELECT copy_content(?::uuid, 'resource', ?::uuid, ?)";
+    public static final String COPY_REFERENCE_RESOURCE_QUERY = "SELECT copy_content(?::uuid, 'resource', ?::uuid, ?::uuid, ?::uuid, ?)";
     
-    public static final String COPY_REFERENCE_QUESTION_QUERY = "SELECT copy_content(?::uuid, 'question', ?::uuid)";
+    public static final String COPY_REFERENCE_QUESTION_QUERY = "SELECT copy_content(?::uuid, 'question', ?::uuid, ?::uuid, ?::uuid)";
 
     public static final String PUBLISHED_FILTER = "id = ?::uuid and publish_status = 'published'::publish_status_type;";
 

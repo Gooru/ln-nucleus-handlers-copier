@@ -17,7 +17,7 @@ public class AJEntityRubric extends Model {
     
     public static final String AUTHORIZER_QUERY = "id = ?::uuid and is_deleted = false";
     
-    public static final String COPY_RUBRIC = "SELECT copy_rubric(?::uuid, ?::uuid)";
+    public static final String COPY_RUBRIC = "SELECT copy_rubric(?::uuid, ?::uuid, ?::uuid, ?::uuid)";
     
     public String getTenant() {
         return this.getString(TENANT);

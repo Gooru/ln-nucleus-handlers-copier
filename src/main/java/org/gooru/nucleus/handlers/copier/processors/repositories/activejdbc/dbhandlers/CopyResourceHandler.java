@@ -78,9 +78,9 @@ class CopyResourceHandler implements DBHandler {
         Object newResourceId;
 
         if (this.sourceOriginalResource != null) {
-          newResourceId = Base.firstCell(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, resourceId, userId);
+          newResourceId = Base.firstCell(AJEntityContent.COPY_ORIGINAL_RESOURCE_QUERY, resourceId, userId, context.tenant(), context.tenantRoot());
         } else {
-          newResourceId = Base.firstCell(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, resourceId, userId, title);
+          newResourceId = Base.firstCell(AJEntityContent.COPY_REFERENCE_RESOURCE_QUERY, resourceId, userId, context.tenant(), context.tenantRoot(), title);
         }
         if (newResourceId == null) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),

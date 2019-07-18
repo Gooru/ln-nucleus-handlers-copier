@@ -18,7 +18,7 @@ public class AJEntityCollection extends Model {
 
     public static final String FETCH_COLLECTION = "id = ?::uuid and is_deleted = false";
 
-    public static final String COPY_COLLECTION_QUERY = "SELECT copy_collection(?::uuid, ? , ?::uuid)";    
+    public static final String COPY_COLLECTION_QUERY = "SELECT copy_collection(?::uuid, ? , ?::uuid, ?::uuid, ?::uuid)";    
 
     private static final String PUBLISH_STATUS = "publish_status";
     private static final String PUBLISH_STATUS_PUBLISHED = "published";

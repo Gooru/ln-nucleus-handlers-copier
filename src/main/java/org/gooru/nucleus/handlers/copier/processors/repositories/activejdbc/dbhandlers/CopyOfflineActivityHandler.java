@@ -55,7 +55,7 @@ class CopyOfflineActivityHandler implements DBHandler {
                 MessageResponseFactory.createNotFoundResponse(MESSAGES.getString(MessageCodeConstants.CP026)),
                 ExecutionResult.ExecutionStatus.FAILED);
         }
-        return AuthorizerBuilder.buildCopyCollectionAuthorizer(this.context).authorize(this.offlineActivity);
+        return AuthorizerBuilder.buildCopyOfflineActivityAuthorizer(this.context).authorize(this.offlineActivity);
 
     }
 
@@ -63,7 +63,7 @@ class CopyOfflineActivityHandler implements DBHandler {
     public ExecutionResult<MessageResponse> executeRequest() {
       final UUID userId = UUID.fromString(context.userId());
       final UUID offlineActivityId = UUID.fromString(context.offlineActivityId());
-      Object copyOfflineActivityId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, offlineActivityId, AJEntityCollection.OFFLINE_ACTIVITY, userId);
+      Object copyOfflineActivityId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, offlineActivityId, AJEntityCollection.OFFLINE_ACTIVITY, userId, context.tenant(), context.tenantRoot());
       if (copyOfflineActivityId != null) {
         return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyOfflineActivityId.toString(),
             EventBuilderFactory.getCopyOfflineActivityEventBuilder(copyOfflineActivityId.toString())),

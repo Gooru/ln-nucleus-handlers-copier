@@ -64,7 +64,7 @@ class CopyCollectionHandler implements DBHandler {
     public ExecutionResult<MessageResponse> executeRequest() {
         final UUID userId = UUID.fromString(context.userId());
         final UUID collectionId = UUID.fromString(context.collectionId());
-        Object copyCollectionId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, collectionId, AJEntityCollection.COLLECTION, userId);
+        Object copyCollectionId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, collectionId, AJEntityCollection.COLLECTION, userId, context.tenant(), context.tenantRoot());
         if (copyCollectionId != null) {
           return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCollectionId.toString(),
               EventBuilderFactory.getCopyCollectionEventBuilder(copyCollectionId.toString())),

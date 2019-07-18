@@ -62,7 +62,7 @@ public class CopyRubricHandler implements DBHandler {
     @Override
     public ExecutionResult<MessageResponse> executeRequest() {
 
-        Object newRubricId = Base.firstCell(AJEntityRubric.COPY_RUBRIC, context.rubricId(), context.userId());
+        Object newRubricId = Base.firstCell(AJEntityRubric.COPY_RUBRIC, context.rubricId(), context.userId(), context.tenant(), context.tenantRoot());
         if (newRubricId != null) {
           LOGGER.info("rubric is copied successfully");
           return new ExecutionResult<>(
