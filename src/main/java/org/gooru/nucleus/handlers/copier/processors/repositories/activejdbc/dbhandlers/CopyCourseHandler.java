@@ -65,7 +65,7 @@ class CopyCourseHandler implements DBHandler {
     public ExecutionResult<MessageResponse> executeRequest() {
         final UUID userId = UUID.fromString(context.userId());
         final UUID courseId = UUID.fromString(context.courseId());
-        Object copyCourseId = Base.firstCell(AJEntityCourse.COPY_COURSE, courseId, userId);
+        Object copyCourseId = Base.firstCell(AJEntityCourse.COPY_COURSE, courseId, userId, context.tenant(), context.tenantRoot());
         if (copyCourseId != null) {
             return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyCourseId.toString(),
                 EventBuilderFactory.getCopyCourseEventBuilder(copyCourseId.toString())),

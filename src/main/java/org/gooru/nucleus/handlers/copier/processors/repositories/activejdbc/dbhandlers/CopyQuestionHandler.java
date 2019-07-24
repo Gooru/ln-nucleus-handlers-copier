@@ -63,7 +63,7 @@ class CopyQuestionHandler implements DBHandler {
     public ExecutionResult<MessageResponse> executeRequest() {
         final UUID userId = UUID.fromString(context.userId());
         final UUID questionId = UUID.fromString(context.questionId());
-        Object newQuestionId = Base.firstCell(AJEntityContent.COPY_REFERENCE_QUESTION_QUERY, questionId, userId);
+        Object newQuestionId = Base.firstCell(AJEntityContent.COPY_REFERENCE_QUESTION_QUERY, questionId, userId, context.tenant(), context.tenantRoot());
         if (newQuestionId == null) {
             return new ExecutionResult<>(MessageResponseFactory.createInternalErrorResponse(),
                 ExecutionResult.ExecutionStatus.FAILED);

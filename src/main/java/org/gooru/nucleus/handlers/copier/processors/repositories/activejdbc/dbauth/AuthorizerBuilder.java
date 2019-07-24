@@ -33,6 +33,10 @@ public final class AuthorizerBuilder {
     public static Authorizer<AJEntityCollection> buildCopyAssessmentAuthorizer(ProcessorContext context) {
         return new TenantCollectionAuthorizer(context);
     }
+    
+    public static Authorizer<AJEntityCollection> buildCopyOfflineActivityAuthorizer(ProcessorContext context) {
+      return new TenantCollectionAuthorizer(context);
+    }
 
     public static Authorizer<AJEntityCourse> buildCopyCourseAuthorizer(ProcessorContext context) {
         return new TenantCourseAuthorizer(context);

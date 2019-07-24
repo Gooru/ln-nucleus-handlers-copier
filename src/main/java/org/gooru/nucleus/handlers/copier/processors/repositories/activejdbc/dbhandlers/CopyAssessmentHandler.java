@@ -63,7 +63,7 @@ class CopyAssessmentHandler implements DBHandler {
     public ExecutionResult<MessageResponse> executeRequest() {
         final UUID userId = UUID.fromString(context.userId());
         final UUID assessmentId = UUID.fromString(context.assessmentId());
-        Object copyAssessmentId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, assessmentId, AJEntityCollection.ASSESSEMENT, userId);
+        Object copyAssessmentId = Base.firstCell(AJEntityCollection.COPY_COLLECTION_QUERY, assessmentId, AJEntityCollection.ASSESSEMENT, userId, context.tenant(), context.tenantRoot());
         if (copyAssessmentId != null) {
           return new ExecutionResult<>(MessageResponseFactory.createCreatedResponse(copyAssessmentId.toString(),
               EventBuilderFactory.getCopyAssessmentEventBuilder(copyAssessmentId.toString())),
