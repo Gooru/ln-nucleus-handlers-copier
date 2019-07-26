@@ -6,7 +6,7 @@ import org.javalite.activejdbc.annotations.Table;
 @Table("course")
 public class AJEntityCourse extends Model {
     public static final String AUTHORIZER_QUERY = "id = ?::uuid and is_deleted = ?";
-    public static final String COPY_COURSE = "SELECT copy_course(?::uuid, ?::uuid)";
+    public static final String COPY_COURSE = "SELECT copy_course(?::uuid, ?::uuid, ?::uuid, ?::uuid)";
     private static final String TENANT = "tenant";
     private static final String TENANT_ROOT = "tenant_root";
     private static final String PUBLISH_STATUS = "publish_status";
